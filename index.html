@@ -912,6 +912,55 @@ function rank(f, pct, g) {
   const t = Math.min(tf, tp);
   return [W ? 'Рятувальниця депо' : 'Рятувальник депо', W ? 'Залізна міледі' : 'Залізний рицар', W ? 'Залізна леді' : 'Залізний лорд', W ? 'Залізна королева' : 'Залізний король'][t];
 }
+
+/* Картинка для сторіз 1080×1920 */
+const SC_COL = { ink: '#18261e', paper: '#ffffff', 'lime-soft': '#e7f4d2', lime: '#b4df5f', muted: '#5b6a60', forest: '#2c4537', hair: '#4a3329', cheek: '#ee7f7c', fe: '#c3313e' };
+function svgToImage(svg) {
+  svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  svg.setAttribute('width', '600'); svg.setAttribute('height', '600');
+  const src = svg.outerHTML.replace(/var\(--([a-z-]+)\)/g, (m, k) => SC_COL[k] || '#cccccc');
+  return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(src) });
+}
+function wrapText(ctx, text, x, y, maxW, lh) {
+  const words = String(text).split(' '); let line = '', yy = y;
+  for (const w of words) { const t = line ? line + ' ' + w : w; if (ctx.measureText(t).width > maxW && line) { ctx.fillText(line, x, yy); line = w; yy += lh } else line = t }
+  if (line) ctx.fillText(line, x, yy);
+  return yy;
+}
+async function storyImage(f, pct, g) {
+  try { await Promise.all(['300 120px Onest', '500 48px Onest', '700 52px Onest', '700 200px "JetBrains Mono"'].map(x => document.fonts.load(x))) } catch (e) {}
+  const W = 1080, H = 1920, P = 80;
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const x = c.getContext('2d');
+  const gr = x.createRadialGradient(W / 2, 0, 0, W / 2, 0, 1700);
+  gr.addColorStop(0, SC_COL.lime); gr.addColorStop(.45, SC_COL['lime-soft']); gr.addColorStop(1, SC_COL.paper);
+  x.fillStyle = gr; x.fillRect(0, 0, W, H);
+  // плитка Fe
+  x.fillStyle = SC_COL.paper; x.strokeStyle = SC_COL.ink; x.lineWidth = 5;
+  x.beginPath(); x.roundRect ? x.roundRect(P, 90, 150, 165, 18) : x.rect(P, 90, 150, 165); x.fill(); x.stroke();
+  x.fillStyle = SC_COL.ink; x.font = '700 30px "JetBrains Mono", monospace'; x.textAlign = 'left'; x.fillText('26', P + 16, 128);
+  x.fillStyle = SC_COL.fe; x.font = '600 80px Onest, sans-serif'; x.textAlign = 'center'; x.fillText('Fe', P + 75, 215);
+  x.fillStyle = SC_COL.ink; x.font = '500 36px Onest, sans-serif'; x.textAlign = 'right'; x.fillText(CONFIG.handle, W - P, 140);
+  // Олена
+  const im = await svgToImage(avatar(f));
+  x.drawImage(im, (W - 600) / 2, 330, 600, 600);
+  // тексти
+  x.textAlign = 'left'; x.fillStyle = SC_COL.ink;
+  x.font = '500 48px Onest, sans-serif'; x.fillText('Я —', P, 1080);
+  x.font = '300 124px Onest, sans-serif';
+  let y = wrapText(x, rank(f, pct, g), P, 1210, W - 2 * P, 128);
+  y += 210;
+  x.font = '700 200px "JetBrains Mono", monospace'; x.fillText(String(f), P, y);
+  const nw = x.measureText(String(f)).width;
+  x.font = '500 56px Onest, sans-serif'; x.fillText(' нг/мл', P + nw, y);
+  x.font = '400 40px Onest, sans-serif';
+  y = wrapText(x, `${g === 'f' ? 'Підняла' : 'Підняв'} феритин Олени з 11 до ${f} · правильних рішень ${pct}%`, P, y + 80, W - 2 * P, 52);
+  x.fillRect(P, 1690, W - 2 * P, 4);
+  x.font = '700 54px Onest, sans-serif'; x.fillText('А як твоє депо?', P, 1775);
+  x.font = '400 38px Onest, sans-serif'; wrapText(x, 'Пройди гру «Залізне депо» на zd.drlakustaclinic.com', P, 1835, W - 2 * P, 48);
+  return await new Promise((res, rej) => c.toBlob(b => b ? res(b) : rej(new Error('blob')), 'image/png'));
+}
+
 function storyCard(f, pct) {
   const holder = h('div', { class: 'stack', style: 'align-items:stretch' });
   const draw = () => {
@@ -930,8 +979,30 @@ function storyCard(f, pct) {
         h('div', { class: 'sc-num' }, f, h('small', {}, ' нг/мл')),
         h('span', { class: 'sc-meta' }, `${g === 'f' ? 'Підняла' : 'Підняв'} феритин Олени з 11 до ${f} · правильних рішень ${pct}%`)),
       h('div', { class: 'sc-cta' }, h('b', {}, 'А як твоє депо?'), h('span', {}, 'Пройди гру «Залізне депо» на zd.drlakustaclinic.com')));
-    holder.replaceChildren(card, toggle,
-      h('p', { class: 'muted small', style: 'text-align:center' }, `Зробіть скриншот картки й поділіться в сторіз з позначкою ${CONFIG.handle}.`));
+    const status = h('p', { class: 'small', style: 'text-align:center', hidden: true });
+    const shareBtn = h('button', { class: 'btn lime', type: 'button', style: 'align-self:center' }, 'Поділитися в сторіз');
+    shareBtn.onclick = async () => {
+      shareBtn.disabled = true; status.hidden = false; status.textContent = 'Готуємо картинку…';
+      try {
+        const blob = await storyImage(f, pct, g);
+        const file = new File([blob], 'zalizne-depo.png', { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({ files: [file], title: 'Залізне депо', text: `Я — ${rank(f, pct, g)}! ${CONFIG.handle}` });
+            status.textContent = `Не забудьте позначити ${CONFIG.handle} у сторіз.`;
+          } catch (e) { status.textContent = e && e.name === 'AbortError' ? 'Поширення скасовано.' : 'Не вдалося відкрити меню «Поділитися». Зробіть скриншот картки.' }
+        } else {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a'); a.href = url; a.download = 'zalizne-depo.png';
+          document.body.append(a); a.click(); a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 4000);
+          status.textContent = `Картинку збережено. Додайте її в сторіз і позначте ${CONFIG.handle}.`;
+        }
+      } catch (e) { status.textContent = 'Не вдалося створити картинку. Зробіть скриншот картки.' }
+      shareBtn.disabled = false;
+    };
+    holder.replaceChildren(card, toggle, shareBtn, status,
+      h('p', { class: 'muted small', style: 'text-align:center' }, `На телефоні оберіть Instagram → Історія. Або просто зробіть скриншот картки й позначте ${CONFIG.handle}.`));
   };
   draw();
   return holder;
