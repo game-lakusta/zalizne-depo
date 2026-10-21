@@ -1,0 +1,1095 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Гра Dr. Lakusta Clinic про дефіцит заліза: проведи Олену до феритину 50+ і пройди самоперевірку.">
+<style>html{color-scheme:light}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>Залізне депо</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one narrow column (mobile first). A treatment timeline of six chapters; Olena's portrait and ferritin gauge ride on a sticky bar; every step is one screen. */
+:root{
+  --bg:#f1f3ef; --paper:#ffffff; --ink:#18261e; --muted:#5b6a60; --line:#cdd5ce;
+  --forest:#2c4537; --on-forest:#ffffff;
+  --lime:#b4df5f; --lime2:#86cf4c; --lime-soft:#e7f4d2; --on-lime:#18261e;
+  --fe:#c3313e; --fe-soft:#f8e0e2;
+  --ok:#2f7d4f; --ok-soft:#dff0e4; --bad:#c3313e; --bad-soft:#f8e0e2;
+  --skin-lo:#e2e0dc; --skin-hi:#f2bd95; --hair:#4a3329; --cheek:#ee7f7c; --lip-lo:#b9aaa8; --lip-hi:#c94a48;
+  --cap:#e4f1d4; --glow-ok:rgba(134,207,76,.55); --glow-bad:rgba(195,49,62,.45); --on-fe:#ffffff;
+  --f-display:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:18px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111814; --paper:#19231d; --ink:#e6ede8; --muted:#9bab9f; --line:#2d3b32;
+  --forest:#b4df5f; --on-forest:#111814;
+  --lime:#b4df5f; --lime2:#86cf4c; --lime-soft:#24341f; --on-lime:#111814;
+  --fe:#ff6f78; --fe-soft:#3a1e22;
+  --ok:#6fd497; --ok-soft:#183324; --bad:#ff6f78; --bad-soft:#3a1e22;
+  --skin-lo:#cdcbc8; --skin-hi:#ecb68f; --hair:#2e211b; --cheek:#e07a76; --lip-lo:#a89c9a; --lip-hi:#d0605c; --cap:#243422; --glow-ok:rgba(180,223,95,.5); --glow-bad:rgba(255,111,120,.45); --on-fe:#111814; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111814; --paper:#19231d; --ink:#e6ede8; --muted:#9bab9f; --line:#2d3b32;
+  --forest:#b4df5f; --on-forest:#111814;
+  --lime:#b4df5f; --lime2:#86cf4c; --lime-soft:#24341f; --on-lime:#111814;
+  --fe:#ff6f78; --fe-soft:#3a1e22;
+  --ok:#6fd497; --ok-soft:#183324; --bad:#ff6f78; --bad-soft:#3a1e22;
+  --skin-lo:#cdcbc8; --skin-hi:#ecb68f; --hair:#2e211b; --cheek:#e07a76; --lip-lo:#a89c9a; --lip-hi:#d0605c; --cap:#243422; --glow-ok:rgba(180,223,95,.5); --glow-bad:rgba(255,111,120,.45); --on-fe:#111814; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scrollbar-width:none;-ms-overflow-style:none}
+html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));position:relative}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding-block:16px 56px;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
+h1{font-size:clamp(40px,10vw,68px);font-weight:300;letter-spacing:-.04em;line-height:.98}
+h2{font-size:clamp(26px,6vw,38px);font-weight:300;letter-spacing:-.03em;line-height:1.08}
+h3{font-size:18px;font-weight:600;line-height:1.3}
+p{margin:0}
+.lede{font-size:17px;max-width:60ch}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.label{font-size:12px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.brand{font-size:13px;color:var(--muted)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid var(--lime2);outline-offset:2px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:14px 24px;font-weight:600;font-size:16px;
+  background:var(--forest);color:var(--on-forest);text-decoration:none;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.lime{background:linear-gradient(90deg,var(--lime2),var(--lime));color:var(--on-lime)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.btn:disabled{opacity:.35;cursor:default;transform:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.stack{display:flex;flex-direction:column;gap:14px;min-width:0}
+.card{background:var(--paper);border:1.5px solid var(--ink);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.soft{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.fact{border-radius:var(--r);padding:16px 18px;background:var(--lime-soft);display:flex;flex-direction:column;gap:6px}
+.fact .label{color:var(--ink);opacity:.75}
+
+/* sticky status */
+.status{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;display:flex;gap:12px;align-items:center;border-bottom:1px solid var(--line)}
+.status .av{width:46px;height:46px;flex:none}
+.gauge{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.gauge-top{display:flex;justify-content:space-between;gap:8px;font-size:13px}
+.gauge-top b{font-family:var(--f-mono)}
+.track{height:12px;border-radius:999px;background:var(--paper);border:1.5px solid var(--ink);position:relative;overflow:hidden}
+.fill{position:absolute;inset:0 auto 0 0;background:var(--fe);border-radius:999px;transition:width .8s cubic-bezier(.3,1.3,.5,1)}
+.mark{position:absolute;top:0;bottom:0;width:1.5px;background:var(--ink)}
+.scale{position:relative;height:14px;font-family:var(--f-mono);font-size:10px;color:var(--muted)}
+.scale span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.status .home{border:1.5px solid var(--ink);background:var(--paper);border-radius:999px;padding:8px 12px;font-size:13px;font-weight:600;flex:none}
+
+/* intro */
+.hero{display:flex;flex-direction:column;gap:18px}
+.fe-tile{width:88px;height:96px;border:2px solid var(--ink);border-radius:10px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--paper);flex:none}
+.fe-tile .n{position:absolute;top:5px;left:8px;font-family:var(--f-mono);font-size:12px;font-weight:700}
+.fe-tile .s{font-size:40px;font-weight:600;line-height:1;color:var(--fe)}
+.fe-tile .w{font-family:var(--f-mono);font-size:10px;margin-top:4px}
+.olena{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:center}
+@media (max-width:440px){.olena{grid-template-columns:92px 1fr}}
+.olena svg{width:100%;height:auto}
+
+/* timeline */
+.timeline{display:flex;flex-direction:column;gap:0;position:relative}
+.tl{display:grid;grid-template-columns:28px 1fr;gap:14px;text-align:left;background:none;border:0;padding:0}
+.tl .rail{position:relative;display:flex;justify-content:center}
+.tl .rail::before{content:"";position:absolute;top:0;bottom:0;width:1.5px;background:var(--line)}
+.tl:first-child .rail::before{top:22px}
+.tl:last-child .rail::before{bottom:calc(100% - 22px)}
+.tl .dot{position:relative;margin-top:14px;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--ink);background:var(--paper)}
+.tl.done .dot{background:var(--lime);border-color:var(--ink)}
+.tl.next .dot{background:var(--fe);border-color:var(--fe)}
+.tl .body{border:1.5px solid var(--ink);border-radius:var(--r);background:var(--paper);padding:14px 16px;margin-block:6px;display:flex;flex-direction:column;gap:4px;transition:transform .2s;min-width:0}
+.tl.locked{cursor:not-allowed}
+.tl.locked .body{border-color:var(--line);opacity:.55}
+.tl:not(.locked):hover .body{transform:translateX(3px)}
+.tl .week{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.tl .st{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.tl.done .st{color:var(--ok)}
+.tl.next .st{color:var(--fe)}
+
+/* steps */
+.stephead{display:flex;flex-direction:column;gap:6px}
+.dots{display:flex;gap:6px}
+.dots i{width:24px;height:4px;border-radius:2px;background:var(--line)}
+.dots i.on{background:var(--ink)}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{position:relative;border:1.5px solid var(--ink);border-radius:999px;padding:10px 16px;text-align:left;font-size:15px;line-height:1.3;max-width:100%;
+  background:var(--paper);color:var(--ink);transition:background .25s,box-shadow .35s,color .25s,transform .15s}
+.pill:hover{transform:translateY(-1px)}
+.pill.on{background:var(--ink);color:var(--bg)}
+.pill.right{background:linear-gradient(90deg,var(--lime2),var(--lime));color:var(--on-lime);box-shadow:0 0 0 3px var(--glow-ok),0 0 22px var(--glow-ok);animation:glow .7s ease}
+.pill.wrong{background:var(--fe);border-color:var(--fe);color:var(--on-fe);box-shadow:0 0 0 3px var(--glow-bad),0 0 22px var(--glow-bad);animation:glow .7s ease}
+.pill.miss{border-style:dashed;border-color:var(--ok);box-shadow:0 0 14px var(--glow-ok)}
+@keyframes glow{0%{transform:scale(1)}35%{transform:scale(1.06)}100%{transform:scale(1)}}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:22px;height:11px;border-radius:999px;vertical-align:-1px;margin-right:6px;border:1.5px solid var(--ink)}
+.bigav{display:grid;grid-template-columns:140px 1fr;gap:16px;align-items:center}
+@media (max-width:440px){.bigav{grid-template-columns:104px 1fr}}
+.bigav svg{width:100%;height:auto}
+/* story card 9:16 */
+.storycard{--ink:#18261e;--paper:#ffffff;--lime-soft:#e7f4d2;--lime:#b4df5f;--muted:#5b6a60;--forest:#2c4537;--fe:#c3313e;--hair:#4a3329;width:100%;max-width:360px;aspect-ratio:9/16;border-radius:28px;border:2px solid var(--ink);overflow:hidden;position:relative;
+  background:radial-gradient(120% 70% at 50% 0%,var(--lime) 0%,var(--lime-soft) 45%,var(--paper) 100%);
+  display:flex;flex-direction:column;justify-content:space-between;padding:26px 22px;gap:12px;color:var(--ink);align-self:center}
+.storycard .sc-top{display:flex;justify-content:space-between;align-items:flex-start}
+.storycard .fe-tile{width:58px;height:64px}
+.storycard .fe-tile .s{font-size:26px}
+.storycard .sc-av{width:58%;align-self:center}
+.storycard .sc-av svg{width:100%;height:auto}
+.storycard .sc-i{font-size:15px;font-weight:500}
+.storycard .sc-rank{font-size:clamp(30px,9vw,40px);font-weight:300;letter-spacing:-.04em;line-height:1}
+.storycard .sc-num{font-family:var(--f-mono);font-weight:700;font-size:44px;line-height:1;letter-spacing:-.03em}
+.storycard .sc-num small{font-size:16px;font-weight:500}
+.storycard .sc-meta{font-size:13px}
+.storycard .sc-cta{border-top:1.5px solid var(--ink);padding-top:12px;display:flex;flex-direction:column;gap:2px;font-size:13px}
+.storycard .sc-cta b{font-size:15px}
+.notes{display:flex;flex-direction:column;gap:8px}
+.notes .n{font-size:14px;padding-left:12px;border-left:3px solid var(--lime2)}
+.notes .n.x{border-left-color:var(--fe)}
+.fb{border-radius:14px;padding:14px 16px;background:var(--lime-soft);font-size:15px;display:flex;flex-direction:column;gap:6px}
+.fb.bad{background:var(--fe-soft)}
+.fb b{font-weight:700}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{border:1.5px solid var(--ink);background:var(--paper);border-radius:14px;padding:13px 16px;text-align:left;font-size:15px}
+.opt.right{background:linear-gradient(90deg,var(--lime2),var(--lime));color:var(--on-lime)}
+.opt.wrong{background:var(--fe-soft);border-color:var(--fe)}
+.opt.dim{opacity:.5}
+.story{font-size:17px}
+.quote{border-left:3px solid var(--ink);padding-left:14px;font-size:16px;font-style:italic}
+
+/* lab */
+.lab{font-family:var(--f-mono);font-size:13px;border:1.5px solid var(--ink);border-radius:14px;overflow:hidden;background:var(--paper);min-width:320px}
+.lab .r{display:grid;grid-template-columns:1.5fr 1fr 1.1fr;gap:8px;padding:9px 12px;border-top:1px solid var(--line)}
+.lab .r:first-child{border-top:0;background:var(--ink);color:var(--bg);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+.lab .lo{color:var(--fe);font-weight:700}
+.scroll{overflow-x:auto}
+
+/* sort */
+.casecard{border:1.5px solid var(--ink);border-radius:var(--r);background:var(--paper);padding:18px;font-size:17px;display:flex;gap:14px;align-items:flex-start}
+.casecard .tag{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:block;margin-bottom:4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.two .btn{padding:14px 12px;font-size:15px;white-space:normal;text-align:center;line-height:1.25}
+
+/* basket */
+.foods{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.food{border:1.5px solid var(--line);background:var(--paper);border-radius:14px;padding:10px 12px;text-align:left;display:flex;flex-direction:column;gap:1px;position:relative;min-width:0}
+.food.on{border-color:var(--ink)}
+.food.off{opacity:.4;cursor:not-allowed}
+.food b{font-weight:600;font-size:14px;line-height:1.25;padding-right:28px}
+.food .p{font-size:12px;color:var(--muted)}
+.food .mg{font-family:var(--f-mono);font-weight:700;font-size:13px;margin-top:4px}
+.food .t{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.t.h{color:var(--fe)}.t.n{color:var(--ok)}
+.food .q{position:absolute;top:8px;right:8px;font-family:var(--f-mono);font-weight:700;background:var(--ink);color:var(--bg);border-radius:999px;min-width:24px;text-align:center;font-size:12px;padding:1px 6px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1.5px solid var(--ink);background:var(--paper);border-radius:999px;padding:8px 14px;font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.big{font-weight:300;font-size:44px;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (max-width:520px){.stats{grid-template-columns:1fr}}
+.stat{border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:2px;background:var(--paper)}
+.stat .v{font-size:26px;font-weight:400;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+
+/* routine sim */
+.q-block{display:flex;flex-direction:column;gap:8px}
+.chart{width:100%;height:auto;display:block}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .goal{stroke:var(--ok);stroke-width:1.5;stroke-dasharray:4 4}
+.chart .lim{stroke:var(--fe);stroke-width:1.5;stroke-dasharray:4 4}
+.chart .ln{fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.chart .area{fill:var(--lime);opacity:.35}
+.chart .pt{fill:var(--fe);stroke:var(--paper);stroke-width:2}
+.chart text{fill:var(--muted);font-family:var(--f-mono);font-size:10px}
+.chart .gl{fill:var(--ok)}.chart .ll{fill:var(--fe)}
+.why{display:flex;flex-direction:column;gap:6px;font-size:14px}
+.why div{display:flex;gap:8px}
+.why .k{font-family:var(--f-mono);font-weight:700;flex:none;width:52px}
+.k.plus{color:var(--ok)}.k.minus{color:var(--fe)}
+
+/* final */
+.result{font-size:clamp(34px,8vw,52px);font-weight:300;letter-spacing:-.04em;line-height:1}
+.share{border:2px solid var(--ink);border-radius:22px;padding:22px;background:var(--paper);display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:center}
+.share .big{font-size:36px}
+.checklist .pill{font-size:14px;padding:8px 13px}
+.yn{display:flex;flex-direction:column;gap:8px}
+.yn .item{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-block:8px}
+.yn .item span{flex:1;min-width:200px;font-size:15px}
+.cta{background:var(--forest);color:var(--on-forest);border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:14px}
+.cta .label{color:var(--on-forest);opacity:.75}
+.pkgs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.pkgs{grid-template-columns:1fr}}
+.pkg{background:var(--bg);color:var(--ink);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.pkg ul{margin:0;padding-left:18px;font-size:14px}
+.price{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-top:auto}
+.price .now{background:linear-gradient(90deg,var(--lime2),var(--lime));color:var(--on-lime);border-radius:999px;padding:4px 14px;font-weight:700;font-size:18px}
+.price s{color:var(--muted);font-size:14px}
+.promo{align-self:flex-start;border:1.5px solid var(--on-forest);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:600}
+.cta .btn{background:var(--bg);color:var(--ink);align-self:flex-start}
+.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;font-size:14px}
+.disclaimer{font-size:12px;color:var(--muted)}
+
+.pop{animation:pop .5s ease}
+@keyframes pop{40%{transform:scale(1.08)}}
+.fade{animation:fade .35s ease}
+@keyframes fade{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap" id="wrap">
+  <main id="app" class="stack" style="gap:20px"></main>
+</div>
+
+<script>
+/* =========================================================
+   НАЛАШТУВАННЯ. Коли акція закінчиться: promo.on = false
+   ========================================================= */
+const CONFIG = {
+  promo: { on: true, badge: '−25% до 31 жовтня', note: 'Акція діє з 1.10 по 31.10.2026' },
+  packages: [
+    { name: 'Базовий', tests: ['Загальний аналіз крові', 'Феритин'], full: 2081, promo: 1600 },
+    { name: 'Розширений', tests: ['Загальний аналіз крові', 'Феритин', 'Загальний білок', 'Вітамін B12', 'Фолієва кислота'], full: 3179, promo: 2400 }
+  ],
+  doctors: 'Катерина Лазарева (онлайн / очно), Анна Євтух (онлайн), Олександра Юхимчук (онлайн / очно)',
+  pageUrl: 'https://www.drlakustaclinic.com/zd2',
+  bookUrl: 'https://t.me/lakusta_assistant',
+  handle: '@dr.lakusta_clinic'
+};
+
+/* ================= helpers ================= */
+const app = document.getElementById('app');
+const h = (tag, attrs = {}, ...kids) => {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v;
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v === true ? '' : v);
+  }
+  kids.flat(9).forEach(c => c != null && c !== false && el.append(c.nodeType ? c : document.createTextNode(c)));
+  return el;
+};
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const fmt = n => (Math.round(n * 10) / 10).toString().replace('.', ',');
+const goTop = () => { try { window.scrollTo({ top: 0, behavior: 'smooth' }) } catch (e) { window.scrollTo(0, 0) } };
+const shuffle = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(x => x[1]);
+const mix = (a, b, t) => { const p = s => [1, 3, 5].map(i => parseInt(s.slice(i, i + 2), 16)); const A = p(a), B = p(b); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join('') };
+const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim() || '#cccccc';
+
+/* Портрет Олени: колір шкіри, рум'янець, очі й усмішка залежать від феритину */
+function avatar(f) {
+  const e = f == null ? 0.05 : clamp((f - 8) / 50, 0, 1);
+  const skin = mix(cssVar('--skin-lo'), cssVar('--skin-hi'), e);
+  const shade = mix(skin, '#9c6b55', 0.28);
+  const lip = mix(cssVar('--lip-lo'), cssVar('--lip-hi'), e);
+  const bg = mix(cssVar('--line'), cssVar('--lime'), e);
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', '0 0 100 100'); svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', 'Олена' + (f == null ? '' : ', феритин ' + f));
+  const open = e > 0.25;
+  const ry = (0.9 + 1.9 * e).toFixed(2);
+  const eyes = open
+    ? `<ellipse cx="43" cy="52" rx="1.9" ry="${ry}" fill="#1d1b1a"/><ellipse cx="57" cy="52" rx="1.9" ry="${ry}" fill="#1d1b1a"/>
+       ${e > 0.6 ? '<circle cx="43.6" cy="51.2" r=".6" fill="#fff"/><circle cx="57.6" cy="51.2" r=".6" fill="#fff"/>' : ''}`
+    : `<path d="M40 52.5 q3 1.6 6 0 M54 52.5 q3 1.6 6 0" stroke="#1d1b1a" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
+  const brow = 46 - 1.2 * e, tilt = (1 - e) * 1.6;
+  const my = 63 + (e - 0.4) * 7;
+  const mouth = e > 0.65
+    ? `<path d="M45.5 62 Q50 ${(66.5).toFixed(1)} 54.5 62 Z" fill="${lip}"/>`
+    : `<path d="M46 63 Q50 ${my.toFixed(1)} 54 63" stroke="${lip}" stroke-width="1.8" fill="none" stroke-linecap="round"/>`;
+  svg.innerHTML = `
+    <circle cx="50" cy="50" r="49" fill="${bg}"/>
+    <path d="M27 64 C24 34 36 21 51 21 C67 21 77 33 74 64 C74 74 77 82 80 86 Q50 96 21 86 C24 81 27 74 27 64 Z" fill="var(--hair)"/>
+    <path d="M14 100 C16 85 30 78 50 78 C70 78 84 85 86 100 Z" fill="var(--forest)"/>
+    <path d="M40 80 Q50 88 60 80" stroke="${mix(cssVar('--forest'), '#ffffff', .25)}" stroke-width="2.4" fill="none"/>
+    <path d="M44 66 L56 66 L56 81 Q50 85 44 81 Z" fill="${shade}"/>
+    <ellipse cx="33.5" cy="53" rx="3" ry="4" fill="${skin}"/>
+    <circle cx="33.5" cy="59" r="1.5" fill="#d9a441"/>
+    <ellipse cx="50" cy="51" rx="16.5" ry="19.5" fill="${skin}"/>
+    <path d="M33 47 C33 30 46 25 57 27 C66 29 70 37 68 47 C62 39 52 35 44 38 C39 40 35 43 33 47 Z" fill="var(--hair)"/>
+    <path d="M45 30 C52 27 60 28 64 33" stroke="#ffffff" stroke-opacity=".18" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M39.5 ${(brow + tilt).toFixed(1)} Q43 ${(brow - 1).toFixed(1)} 46.5 ${brow.toFixed(1)} M53.5 ${brow.toFixed(1)} Q57 ${(brow - 1).toFixed(1)} 60.5 ${(brow + tilt).toFixed(1)}" stroke="var(--hair)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+    <path d="M40 56 q3 1.8 6 0 M54 56 q3 1.8 6 0" stroke="#8a7d92" stroke-width="1.3" fill="none" opacity="${((1 - e) * 0.75).toFixed(2)}"/>
+    ${eyes}
+    <path d="M50.5 54 q-1.6 3.6 .6 4.4" stroke="${shade}" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+    <ellipse cx="40" cy="60" rx="3.6" ry="2.4" fill="var(--cheek)" opacity="${(e * 0.7).toFixed(2)}"/>
+    <ellipse cx="60" cy="60" rx="3.6" ry="2.4" fill="var(--cheek)" opacity="${(e * 0.7).toFixed(2)}"/>
+    ${mouth}
+    ${e < 0.25 ? '<text x="70" y="27" font-family="monospace" font-size="10" font-weight="700" fill="var(--muted)">z z</text>' : ''}
+    ${e > 0.8 ? '<path d="M78 24 l1.4 3.6 3.6 1.4 -3.6 1.4 -1.4 3.6 -1.4 -3.6 -3.6 -1.4 3.6 -1.4 Z M22 30 l1 2.4 2.4 1 -2.4 1 -1 2.4 -1 -2.4 -2.4 -1 2.4 -1 Z" fill="var(--paper)"/>' : ''}`;
+  return svg;
+}
+
+/* ================= контент ================= */
+const CHAPTERS = [
+  { id: 'symp', week: 'Тиждень 0', title: 'Що з Оленою?', sub: 'Симптоми, які легко списати на втому',
+    fact: 'За даними ВООЗ, дефіцит заліза або залізодефіцитна анемія є у 33% невагітних жінок, 40% вагітних і 42% дітей.',
+    steps: [
+      { type: 'story', text: 'Олені 32 роки, вона дизайнерка. Останні три місяці вона ніби на розрядженій батарейці. Ось нотатки, які вона веде в телефоні, перш ніж іти до лікаря.' },
+      { type: 'pick', q: 'Позначте все, що може бути пов’язане з нестачею заліза.',
+        items: [
+          { t: 'Сплю 8 годин, а прокидаюсь втомлена', y: true, why: 'Залізо потрібне, щоб переносити кисень до тканин. Без нього навіть після сну сил немає.' },
+          { t: 'Не можу зосередитись, усе забуваю', y: true, why: 'Мозку бракує кисню й ферментів, тому погіршуються пам’ять і концентрація.' },
+          { t: 'Волосся лишається на гребінці', y: true, why: 'Волосяні фолікули дуже чутливі до нестачі заліза.' },
+          { t: 'Серце калатає. Кардіолог сказав, що ЕКГ у нормі', y: true, why: 'Молоді пацієнтки часто приходять із серцебиттям до кардіолога, а лікують їх залізом.' },
+          { t: 'Ноги ввечері не можна вмостити, хочеться ними рухати', y: true, why: 'Це синдром неспокійних ніг. Він тісно пов’язаний із дефіцитом заліза.' },
+          { t: 'Хочеться гризти лід і сухі макарони', y: true, why: 'Тяга до незвичної їжі називається пікацизмом. Одна пацієнтка лікарки гризла сухі макарони.' },
+          { t: 'Не можу нанюхатися господарського мила', y: true, why: 'Зміна нюхових вподобань теж трапляється при дефіциті заліза.' },
+          { t: 'Після борщу сеча стала рожевою', y: true, why: 'Це бітурія. При дефіциті заліза більше барвника буряка всмоктується й виходить із сечею.' },
+          { t: 'Тримається температура 37,1, а застуди немає', y: true, why: 'Дефіцит заліза впливає на ферменти в центрах терморегуляції мозку.' },
+          { t: 'П’яти грубішають і тріскаються, в носі кірки', y: true, why: 'Шкіра й слизові гірше відновлюються. Тому перед косметичними процедурами залізо варто перевірити.' },
+          { t: 'Закладає вухо після басейну', y: false, why: 'Найімовірніше, це вода у вусі або отит.' },
+          { t: 'Дуже хочеться пити, часто бігаю в туалет', y: false, why: 'Таку ознаку варто перевірити на рівень цукру.' }
+        ],
+        after: 'Залізо працює в багатьох ферментах різних органів, тому скарги бувають дуже різноманітні й неспецифічні.' },
+      { type: 'single', q: 'Олена думає, що в неї депресія: немає сил, нічого не хочеться. Що варто зробити?',
+        o: ['Одразу почати антидепресанти', 'Перевірити й залізо: симптоми дуже схожі', 'Просто більше відпочивати'], a: 1,
+        ex: 'Коли лікарі лікують депресію, вони перевіряють і дефіцит заліза, бо симптоми схожі. Залізо потрібне, зокрема, для синтезу серотоніну й рецепторів дофаміну.' },
+      { type: 'story', setFer: 11, text: 'Олена сходила до лікарки й здала аналізи. Гемоглобін у нормі, але феритин лише 11 нг/мл. Діагноз: дефіцит заліза без анемії. Її депо майже порожнє, а мета лікування — феритин 50 нг/мл і вище.' }
+    ] },
+
+  { id: 'food', week: 'Тиждень 1', title: 'А якщо просто їсти печінку?', sub: 'Чому дефіцит не вилікувати харчуванням',
+    fact: 'До 79% дівчат-вегетаріанок мають дефіцит заліза, а до 30% мають анемію.',
+    steps: [
+      { type: 'basket' },
+      { type: 'single', fer: f => f + 1,
+        q: 'Отже, що робити Олені з її феритином 11?',
+        o: ['Їсти ще більше печінки й гранатів', 'Лікувати препаратами заліза, а харчування нехай підтримує результат', 'Нічого, організм сам упорається'], a: 1,
+        ex: 'Їжа допомагає не повернутися до дефіциту, але вже порожнє депо наповнюють препарати. За місяць «залізної» дієти феритин Олени виріс лише на одиницю.' }
+    ] },
+
+  { id: 'iv', week: 'Тиждень 2', title: 'Таблетки чи крапельниця?', sub: 'Кому потрібне в/в залізо',
+    fact: 'В/в залізо дозволяє ввести до 1000 мг заліза за одну крапельницю і не подразнює шлунок. Але вводити його треба під наглядом лікаря.',
+    steps: [
+      { type: 'story', text: '«А може, мені одразу крапельницю? Кажуть, так швидше», — питає Олена. Спершу розберімося, кому вона справді потрібна.' },
+      { type: 'pick', split: true, q: 'При яких станах залізо з таблеток погано засвоюється?',
+        items: [
+          { t: 'Запальні захворювання кишківника', y: true, why: 'Запалена слизова кишківника гірше всмоктує залізо.' },
+          { t: 'Целіакія', y: true, why: 'Через глютен ушкоджується слизова тонкої кишки, саме там, де всмоктується залізо.' },
+          { t: 'Стан після баріатричної операції', y: true, why: 'Ділянку, де всмоктується залізо, змінено назавжди.' },
+          { t: 'Аутоімунний гастрит', y: true, why: 'Низька кислотність шлунка заважає засвоєнню.' },
+          { t: 'Операції на шлунку чи кишківнику', y: true, why: 'Після видалення чи обходу частини шлунка або кишки залізо засвоюється гірше.' },
+          { t: 'Хелікобактер', y: true, why: 'Після лікування інфекції засвоєння відновлюється.' },
+          { t: 'Рясні менструації', y: false, why: 'Тут залізо засвоюється, але його багато втрачається. Це інша причина дефіциту.' },
+          { t: 'Вегетаріанство', y: false, why: 'Засвоєння в нормі, просто заліза надходить мало.' },
+          { t: 'Вагітність', y: false, why: 'Засвоєння в нормі, але потреба в залізі зростає.' }
+        ],
+        after: 'Якщо лікувальні дози більше 2 місяців не дають результату, лікар шукає причину за алгоритмом. Деякі причини можна вилікувати. При постійних втратах або поганому всмоктуванні лікарі залучають крапельне введення заліза.' },
+      { type: 'sort', q: 'Для кожної людини оберіть, з чого найімовірніше почнеться лікування.',
+        L: 'Таблетки', R: 'Крапельниця',
+        cases: [
+          { t: 'Від таблеток нудота й біль у животі. Вже змінювала препарати.', a: 'R', ex: 'Непереносимість і побічні ефекти з боку ШКТ входять до показів.' },
+          { t: 'Олена: перший курс, шлунок здоровий, часу достатньо.', a: 'L', ex: 'Таблетки ефективні для більшості пацієнтів і мають дуже низький ризик серйозних побічних ефектів.' },
+          { t: 'Планова операція за 3 тижні, а залізо низьке.', a: 'R', ex: 'Коли потрібно швидко поповнити запаси, наприклад перед операцією чи естетичними процедурами.' },
+          { t: 'Дуже рясні менструації, таблетки не встигають покривати втрати.', a: 'R', ex: 'Постійна крововтрата, яка перевищує можливості таблеток.' },
+          { t: 'Хочу крапельницю, бо подруга казала, що так швидше.', a: 'L', ex: 'Покази визначає лікар. Без них починають із таблеток.' }
+        ] },
+      { type: 'single',
+        q: 'Олена бачить рекламу: «Крапельниця заліза вдома, без консультації». Що скажете?',
+        o: ['Зручно, варто погодитися', 'Небезпечно: дозу, розведення, швидкість введення, контроль тиску й премедикацію визначає лікар', 'Нормально, якщо медсестра досвідчена'], a: 1,
+        ex: 'Для в/в заліза є групи високого ризику ускладнень. Лікар має провести опитування, розрахувати дозу й розведення і дати медсестрі настанови. Під час введення в приміщенні має бути лікар.' },
+      { type: 'story', text: 'Олені підходять таблетки: це перший курс, і шлунок у неї здоровий. Лікарка призначила препарат. Тепер головне — правильно його пити.' }
+    ] },
+
+  { id: 'pill', week: 'Тижні 3–11', title: 'Ранкова таблетка', sub: 'Як пити залізо, щоб воно засвоювалось',
+    fact: 'Залізо, прийняте разом зі сніданком і кавою, засвоюється на 66% гірше, ніж натще з водою.',
+    steps: [
+      { type: 'routine' },
+      { type: 'single', fer: (f, ok) => ok ? Math.min(96, f + 22) : Math.max(16, f - 18),
+        q: 'Тиждень 11. Гемоглобін у нормі, Олені значно краще. Чи можна кидати таблетки?',
+        o: ['Так, мета досягнута', 'Ні, продовжувати ще щонайменше 3 місяці, поки феритин не стане 50 і вище', 'Перейти на крапельницю, щоб швидше закінчити'], a: 1,
+        okText: 'Через 3 місяці феритин Олени стабільно вищий за 50.',
+        badText: 'Олена кинула таблетки. Через 4 місяці депо знову спорожніло, і втома повернулась.',
+        ex: 'Гемоглобін відновлюється за 6–12 тижнів, а депо поповнюється довше. Після нормалізації гемоглобіну прийом продовжують принаймні 3 місяці. Мета лікування — феритин 50 нг/мл і вище. При синдромі неспокійних ніг ціль вища 75, при випадінні волосся — вища 70.' }
+    ] },
+
+  { id: 'prev', week: 'Тиждень 26', title: 'Щоб не повернулось', sub: 'Профілактика без «про всяк випадок»',
+    fact: 'Дефіцит заліза має 30–35% дівчат-спортсменок і кожна четверта вагітна в Україні.',
+    steps: [
+      { type: 'pick', split: true, fer: (f, r) => f + Math.round(r * 4),
+        q: 'Олена підняла рівень феритину. Що допоможе їй утримати результат?',
+        items: [
+          { t: 'Перевіряти феритин, бо вона в групі ризику', y: true, why: 'Рясні менструації роблять Олену групою ризику. Регулярний аналіз помітить дефіцит ще до симптомів.' },
+          { t: 'Обговорити з гінекологом рясні менструації', y: true, why: 'Якщо прибрати причину втрат, дефіцит не повернеться.' },
+          { t: 'Пити чай і каву окремо від їжі', y: true, why: 'Чорний чай знижує всмоктування заліза з їжі на 79–94%, какао на 71%, ромашка на 47%.' },
+          { t: 'До бобових і гречки додавати овочі з вітаміном C', y: true, why: 'Вітамін C покращує засвоєння негемового заліза з рослин.' },
+          { t: 'Рідше їсти ковбаси, сосиски, солодку газованку', y: true, why: 'Фосфати Е340, Е341, Е452 заважають засвоєнню заліза.' },
+          { t: 'Профілактичні курси під час менструацій, якщо їх порадив лікар', y: true, why: 'Наприклад, 18–25 мг 5 днів поспіль під час менструації. Схему підбирає лікар.' },
+          { t: 'Пити залізо постійно «про всяк випадок», без аналізів', y: false, why: 'Надлишок заліза теж шкодить.' },
+          { t: 'Повністю відмовитися від молочних продуктів', y: false, why: 'Цього не рекомендують через ризик переломів. Досить розносити молочне й залізо в часі.' },
+          { t: 'Чекати, поки впаде гемоглобін', y: false, why: 'Гемоглобін падає останнім, а дефіцит видно раніше за феритином.' }
+        ],
+        after: 'Профілактика — це контроль аналізів і усунення причини, а не таблетки навмання.' }
+    ] }
+];
+
+// mg — вміст заліза на порцію (за списком продуктів клініки, на 100 г × вага порції)
+// ab — орієнтовна засвоюваність: гемове 15–35%, субпродукти 25–30%, зелень 7–9%, крупи 4%, бобові 2% (ACS Omega, 2022)
+// kcal — орієнтовна калорійність порції
+const FOODS = [
+  { id: 'pliver', t: 'Свиняча печінка', p: '80 г', mg: 16, ab: .27, h: 1, kcal: 107 },
+  { id: 'cliver', t: 'Куряча печінка', p: '80 г', mg: 13.6, ab: .27, h: 1, kcal: 95 },
+  { id: 'mussels', t: 'Мідії', p: '100 г', mg: 7, ab: .2, h: 1, kcal: 86 },
+  { id: 'beef', t: 'Яловичина', p: '120 г', mg: 3.2, ab: .2, h: 1, kcal: 225 },
+  { id: 'pork', t: 'Свинина', p: '120 г', mg: 3.2, ab: .2, h: 1, kcal: 290 },
+  { id: 'rabbit', t: 'Кролик', p: '120 г', mg: 3.8, ab: .2, h: 1, kcal: 163 },
+  { id: 'turkey', t: 'Стегно індички', p: '120 г', mg: 1.8, ab: .2, h: 1, kcal: 173 },
+  { id: 'chicken', t: 'Куряче філе', p: '120 г', mg: 1.4, ab: .2, h: 1, kcal: 144 },
+  { id: 'trout', t: 'Форель або сьомга', p: '120 г', mg: 2.1, ab: .2, h: 1, kcal: 240 },
+  { id: 'tuna', t: 'Тунець консервований', p: '100 г', mg: 1.2, ab: .2, h: 1, kcal: 116 },
+  { id: 'hake', t: 'Хек', p: '150 г', mg: 1.3, ab: .2, h: 1, kcal: 129 },
+  { id: 'yolk', t: 'Жовтки', p: '2 шт', mg: 2.3, ab: .03, h: 0, kcal: 110 },
+  { id: 'lentil', t: 'Сочевиця', p: '60 г сухої', mg: 7.1, ab: .02, h: 0, kcal: 211 },
+  { id: 'peas', t: 'Горох', p: '60 г сухого', mg: 4.2, ab: .02, h: 0, kcal: 204 },
+  { id: 'soy', t: 'Соя', p: '50 г сухої', mg: 4.9, ab: .02, h: 0, kcal: 223 },
+  { id: 'buck', t: 'Гречка', p: '60 г сухої', mg: 2.2, ab: .04, h: 0, kcal: 206 },
+  { id: 'quinoa', t: 'Кіноа', p: '60 г сухої', mg: 3.6, ab: .04, h: 0, kcal: 221 },
+  { id: 'bran', t: 'Пшеничні висівки', p: '20 г', mg: 2.4, ab: .04, h: 0, kcal: 43 },
+  { id: 'spinach', t: 'Шпинат', p: '80 г', mg: 3.4, ab: .07, h: 0, kcal: 18 },
+  { id: 'parsley', t: 'Петрушка', p: '20 г', mg: 1.2, ab: .07, h: 0, kcal: 7 },
+  { id: 'kelp', t: 'Морська капуста', p: '50 г', mg: 8, ab: .04, h: 0, kcal: 25 },
+  { id: 'mush', t: 'Сушені гриби', p: '10 г', mg: 3.2, ab: .04, h: 0, kcal: 30 },
+  { id: 'sesame', t: 'Кунжут', p: '15 г', mg: 2.4, ab: .04, h: 0, kcal: 86 },
+  { id: 'chia', t: 'Чіа', p: '20 г', mg: 1.2, ab: .04, h: 0, kcal: 97 },
+  { id: 'almond', t: 'Мигдаль', p: '30 г', mg: 1.4, ab: .04, h: 0, kcal: 174 },
+  { id: 'peanut', t: 'Арахіс або кедровий горіх', p: '30 г', mg: 1.7, ab: .04, h: 0, kcal: 170 },
+  { id: 'apricot', t: 'Курага або чорнослив', p: '40 г', mg: 5.6, ab: .04, h: 0, kcal: 96 },
+  { id: 'choc', t: 'Чорний шоколад', p: '25 г', mg: 3.5, ab: .04, h: 0, kcal: 150 },
+  { id: 'rasp', t: 'Малина', p: '100 г', mg: 1.8, ab: .04, h: 0, kcal: 52 },
+  { id: 'currant', t: 'Чорна смородина', p: '100 г', mg: 1.5, ab: .04, h: 0, kcal: 63 },
+  { id: 'apple', t: 'Яблуко', p: '1 шт', mg: .2, ab: .04, h: 0, kcal: 95 },
+  { id: 'pomeg', t: 'Гранат', p: '1 шт', mg: .8, ab: .04, h: 0, kcal: 166 }
+];
+const DRINKS = [
+  { id: 'water', t: 'Вода', k: 1, note: '' },
+  { id: 'juice', t: 'Апельсиновий сік', k: 1.3, note: 'вітамін C покращує засвоєння' },
+  { id: 'coffee', t: 'Кава', k: .61, note: 'кава знижує всмоктування з їжі на 39%' },
+  { id: 'tea', t: 'Чорний чай', k: .15, note: 'чорний чай знижує всмоктування на 79–94%' },
+  { id: 'cham', t: 'Ромашковий чай', k: .53, note: 'ромашка знижує всмоктування на 47%' }
+];
+
+/* ================= стан ================= */
+const KEY = 'zd-depot-v2';
+let S = { done: {}, ferAfter: {}, score: {}, check: null };
+try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.done) S = Object.assign(S, s) } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)) } catch (e) {} };
+const chIndex = id => CHAPTERS.findIndex(c => c.id === id);
+const ferBefore = i => { for (let k = i - 1; k >= 0; k--) { const v = S.ferAfter[CHAPTERS[k].id]; if (v != null) return v } return null };
+const currentFer = () => ferBefore(CHAPTERS.length);
+const unlocked = i => i === 0 || !!S.done[CHAPTERS[i - 1].id];
+const totals = () => Object.values(S.score).reduce((a, s) => [a[0] + s[0], a[1] + s[1]], [0, 0]);
+
+let R = null; // поточний розділ
+
+/* ================= статус-бар ================= */
+function mood(f) {
+  if (f == null) return 'Олена: ще не обстежилась';
+  if (f < 15) return 'Олена ледве тримається';
+  if (f < 30) return 'Олені трохи легше';
+  if (f < 50) return 'Олена майже як раніше';
+  if (f < 70) return 'Олена повна сил';
+  return 'Олена сяє';
+}
+let moodEl;
+function statusBar(f, withHome = true) {
+  const pct = f == null ? 0 : clamp(f, 0, 100);
+  const fill = h('div', { class: 'fill', style: 'width:' + pct + '%' });
+  const val = h('b', {}, f == null ? '? нг/мл' : f + ' нг/мл');
+  const bar = h('div', { class: 'status' },
+    h('div', { class: 'av' }, avatar(f)),
+    h('div', { class: 'gauge' },
+      h('div', { class: 'gauge-top' }, moodEl = h('span', {}, mood(f)), val),
+      h('div', { class: 'track' }, fill, h('i', { class: 'mark', style: 'left:30%' }), h('i', { class: 'mark', style: 'left:50%' })),
+      h('div', { class: 'scale' }, h('span', { style: 'left:4px;transform:none' }, '0'), h('span', { style: 'left:30%' }, '30'), h('span', { style: 'left:50%' }, '50 ціль'), h('span', { style: 'right:0;transform:none' }, '100'))),
+    withHome ? h('button', { class: 'home', type: 'button', onclick: () => { timeline(); goTop() } }, 'План') : null);
+  bar._f = f; const md = moodEl;
+  bar.update = nf => {
+    const from = bar._f == null ? nf : bar._f; bar._f = nf;
+    fill.style.width = clamp(nf, 0, 100) + '%'; val.textContent = nf + ' нг/мл'; md.textContent = mood(nf);
+    val.classList.remove('pop'); void val.offsetWidth; val.classList.add('pop');
+    const av = bar.querySelector('.av');
+    const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || from === nf) { av.replaceChildren(avatar(nf)); return }
+    const t0 = performance.now(), dur = 900;
+    const tick = t => { const k = clamp((t - t0) / dur, 0, 1), ez = 1 - Math.pow(1 - k, 3);
+      av.replaceChildren(avatar(Math.round(from + (nf - from) * ez))); if (k < 1) requestAnimationFrame(tick) };
+    requestAnimationFrame(tick);
+  };
+  return bar;
+}
+
+/* ================= екрани ================= */
+function intro() {
+  const started = Object.keys(S.done).length > 0;
+  app.replaceChildren(
+    h('div', { class: 'row', style: 'justify-content:space-between' }, h('span', { class: 'brand' }, CONFIG.handle), h('span', { class: 'label' }, 'Гра · 10 хвилин')),
+    h('section', { class: 'hero fade' },
+      h('div', { class: 'row', style: 'align-items:flex-end;gap:16px' },
+        h('div', { class: 'fe-tile' }, h('span', { class: 'n' }, '26'), h('span', { class: 's' }, 'Fe'), h('span', { class: 'w' }, '55,845')),
+        h('span', { class: 'label', style: 'padding-bottom:4px' }, 'Гра про дефіцит заліза')),
+      h('h1', {}, 'Залізне депо'),
+      h('p', { class: 'lede' }, 'Проведи Олену покроково від «я просто втомилась» до феритину 50+.'),
+      h('p', { class: 'lede' }, 'Кожне рішення змінює її самопочуття і рівень феритину.')),
+    h('div', { class: 'card olena' },
+      avatar(currentFer()),
+      h('div', { class: 'stack', style: 'gap:6px' },
+        h('h3', {}, 'Олена, 32 роки'),
+        h('p', { class: 'muted small' }, 'Дизайнерка. Рясні менструації, ранкова кава, багато салатів. Три місяці постійної втоми.'),
+        h('p', { class: 'small' }, 'Феритин: ', h('b', { class: 'mono' }, currentFer() == null ? 'ще невідомо' : currentFer() + ' нг/мл')))),
+    h('div', { class: 'row' },
+      h('button', { class: 'btn lime', type: 'button', onclick: () => { timeline(); goTop() } }, started ? 'Продовжити гру' : 'Підняти феритин Олені'),
+      h('button', { class: 'btn', type: 'button', onclick: () => { selfCheck(); goTop() } }, 'Пройти самоперевірку'),
+      started ? h('button', { class: 'btn ghost', type: 'button', onclick: () => { S = { done: {}, ferAfter: {}, score: {}, check: null }; save(); timeline(); goTop() } }, 'Почати заново') : null),
+    h('p', { class: 'disclaimer' }, 'Гра має освітню мету і не замінює консультацію лікаря. Дози й схеми лікування призначає лікар.')
+  );
+}
+
+function timeline() {
+  const f = currentFer();
+  const all = CHAPTERS.every(c => S.done[c.id]);
+  const nextI = CHAPTERS.findIndex((c, i) => !S.done[c.id] && unlocked(i));
+  app.replaceChildren(
+    statusBar(f, false),
+    h('div', { class: 'stephead' }, h('span', { class: 'label' }, 'План лікування Олени'), h('h2', {}, all ? 'Шлях пройдено' : 'Куди рухаємось далі?')),
+    h('div', { class: 'timeline' }, CHAPTERS.map((c, i) => {
+      const lock = !unlocked(i), done = S.done[c.id], next = i === nextI;
+      const sc = S.score[c.id];
+      return h('button', { type: 'button', class: 'tl' + (lock ? ' locked' : '') + (done ? ' done' : '') + (next ? ' next' : ''), 'aria-disabled': lock ? 'true' : 'false',
+        onclick: () => { if (!lock) { runChapter(i); goTop() } } },
+        h('span', { class: 'rail' }, h('span', { class: 'dot' })),
+        h('span', { class: 'body' },
+          h('span', { class: 'week' }, c.week),
+          h('h3', {}, c.title),
+          h('span', { class: 'muted small' }, c.sub),
+          h('span', { class: 'st' }, done ? '✓ Пройдено' + (sc ? ` · ${sc[0]}/${sc[1]}` : '') : lock ? 'Згодом' : 'Почати →')));
+    })),
+    h('div', { class: 'row' },
+      all ? h('button', { class: 'btn lime', type: 'button', onclick: () => { finale(); goTop() } }, 'Результат і самоперевірка') : null,
+      h('button', { class: 'btn ghost', type: 'button', onclick: () => { intro(); goTop() } }, 'На початок'))
+  );
+}
+
+function runChapter(i) {
+  R = { i, step: 0, fer: ferBefore(i), ok: 0, tot: 0 };
+  renderStep();
+}
+function renderStep() {
+  const ch = CHAPTERS[R.i];
+  if (R.step >= ch.steps.length) return chapterEnd();
+  const st = ch.steps[R.step];
+  R.bar = statusBar(R.fer);
+  const dots = h('div', { class: 'dots' }, ch.steps.map((_, k) => h('i', { class: k <= R.step ? 'on' : '' })));
+  const head = h('div', { class: 'stephead' }, h('span', { class: 'label' }, ch.week + ' · ' + ch.title), dots);
+  const body = h('div', { class: 'stack fade', style: 'gap:16px' });
+  const parts = [R.bar, head];
+  if (R.step === 0) parts.push(h('div', { class: 'fact' }, h('span', { class: 'label' }, 'Цікавий факт'), h('p', {}, ch.fact)));
+  parts.push(body);
+  app.replaceChildren(...parts);
+  TYPES[st.type](st, body);
+}
+function setFer(v) { R.fer = Math.round(v); R.bar.update(R.fer) }
+function next(label) {
+  return h('button', { class: 'btn', type: 'button', onclick: () => { R.step++; renderStep(); goTop() } },
+    label || (R.step + 1 < CHAPTERS[R.i].steps.length ? 'Далі' : 'Завершити розділ'));
+}
+function chapterEnd() {
+  const ch = CHAPTERS[R.i];
+  S.done[ch.id] = true; S.score[ch.id] = [R.ok, R.tot];
+  if (R.fer != null) S.ferAfter[ch.id] = R.fer;
+  save();
+  const last = R.i === CHAPTERS.length - 1;
+  app.replaceChildren(statusBar(R.fer),
+    h('div', { class: 'stack fade' },
+      h('span', { class: 'label' }, ch.week),
+      h('h2', {}, 'Розділ «' + ch.title + '» пройдено'),
+      h('div', { class: 'bigav card' }, avatar(R.fer), h('div', { class: 'stack', style: 'gap:4px' },
+        h('span', { class: 'label' }, 'Олена зараз'), h('h3', {}, mood(R.fer)),
+        h('span', { class: 'mono' }, R.fer == null ? 'Феритин ще невідомий' : 'Феритин ' + R.fer + ' нг/мл'))),
+      h('p', { class: 'lede' }, `Правильних рішень: ${R.ok} з ${R.tot}.`),
+      h('div', { class: 'row' },
+        h('button', { class: 'btn lime', type: 'button', onclick: () => { last ? finale() : runChapter(R.i + 1); goTop() } }, last ? 'До результату' : 'Наступний розділ'),
+        h('button', { class: 'btn ghost', type: 'button', onclick: () => { timeline(); goTop() } }, 'План'))));
+}
+
+/* ================= типи кроків ================= */
+const TYPES = {
+  story(st, box) {
+    if (st.setFer != null) setFer(st.setFer);
+    box.append(h('p', { class: 'story' }, st.text), h('div', { class: 'row' }, next()));
+  },
+
+  pick(st, box) {
+    const items = shuffle(st.items.map((it, k) => ({ ...it, k })));
+    const sel = new Set(); let checked = false;
+    const wrap = h('div', { class: 'pills' });
+    const notes = h('div', { class: 'notes', hidden: true });
+    const fb = h('div', { class: 'fb', hidden: true });
+    const btn = h('button', { class: 'btn', type: 'button', disabled: true }, 'Перевірити');
+    const draw = () => { if (!checked) btn.disabled = sel.size === 0; wrap.replaceChildren(...items.map(it => {
+      let c = 'pill';
+      if (checked) { if (sel.has(it.k)) c += it.y ? ' right' : ' wrong'; else if (it.y) c += ' miss' }
+      else if (sel.has(it.k)) c += ' on';
+      return h('button', { type: 'button', class: c, 'aria-pressed': sel.has(it.k) ? 'true' : 'false',
+        onclick: () => { if (checked) return; sel.has(it.k) ? sel.delete(it.k) : sel.add(it.k); draw() } }, it.t);
+    })) };
+    btn.onclick = () => {
+      checked = true; draw();
+      let right = 0;
+      items.forEach(it => { if (sel.has(it.k) === it.y) right++ });
+      R.ok += right; R.tot += items.length;
+      if (st.fer && R.fer != null) setFer(st.fer(R.fer, right / items.length));
+      const note = it => h('p', { class: 'n' + (it.y ? '' : ' x') }, h('b', {}, it.t + '. '), it.why);
+      if (false) {
+        const ws = items.filter(it => it.why && (sel.has(it.k) || it.y));
+        notes.hidden = !ws.length;
+        notes.replaceChildren(...ws.map(note));
+      } else {
+      const mine = items.filter(it => it.why && sel.has(it.k));
+      const rest = items.filter(it => it.why && !sel.has(it.k));
+      notes.hidden = !(mine.length || rest.length);
+      notes.replaceChildren(
+        ...(mine.length ? [h('span', { class: 'label' }, 'Ваші відповіді'), ...mine.map(note)] : []),
+        ...(rest.length ? [h('span', { class: 'label', style: 'margin-top:10px' }, 'Що ви не обрали'), ...rest.map(note)] : []));
+      }
+      fb.hidden = false; fb.className = 'fb' + (right === items.length ? '' : '');
+      fb.replaceChildren(h('b', {}, `Правильно ${right} з ${items.length}.`), st.after || '');
+      btn.replaceWith(next());
+    };
+    draw();
+    box.append(h('h3', {}, st.q), h('p', { class: 'muted small' }, 'Позначте хоча б одну картку, тоді натисніть «Перевірити». Правильні засвітяться зеленим, помилкові червоним.'), wrap, fb, notes, h('div', { class: 'row' }, btn));
+  },
+
+  single(st, box) {
+    const fb = h('div', { class: 'fb', hidden: true });
+    const nav = h('div', { class: 'row' });
+    let locked = false;
+    const opts = h('div', { class: 'opts' }, st.o.map((o, j) => h('button', { type: 'button', class: 'opt', onclick: () => {
+      if (locked) return; locked = true;
+      const ok = j === st.a;
+      [...opts.children].forEach((b, x) => b.classList.add(x === st.a ? 'right' : x === j ? 'wrong' : 'dim'));
+      R.tot++; if (ok) R.ok++;
+      if (st.setFer != null) setFer(st.setFer);
+      if (st.fer && R.fer != null) setFer(st.fer(R.fer, ok));
+      fb.hidden = false; fb.className = 'fb' + (ok ? '' : ' bad');
+      fb.replaceChildren(h('b', {}, ok ? 'Так.' : 'Не зовсім.'), ok ? (st.okText || '') : (st.badText || ''), h('span', {}, st.ex));
+      nav.append(next());
+    } }, o)));
+    const parts = [];
+    if (st.lab) parts.push(h('div', { class: 'scroll' }, h('div', { class: 'lab' },
+      h('div', { class: 'r' }, h('span', {}, 'Показник'), h('span', {}, 'Результат'), h('span', {}, 'Референс')),
+      st.lab.map(r => h('div', { class: 'r' }, h('span', {}, r[0]), h('span', { class: r[3] ? 'lo' : '' }, r[1] + (r[3] ? ' ↓' : '')), h('span', { class: 'muted' }, r[2]))))),
+      h('p', { class: 'muted small' }, '* Нижня межа в бланках лабораторій часто нижча. Для дорослих дефіцитом вважають феритин нижче 30 нг/мл.'));
+    box.append(...parts, h('h3', {}, st.q), opts, fb, nav);
+  },
+
+  sort(st, box) {
+    let k = 0;
+    const cases = shuffle(st.cases);
+    const area = h('div', { class: 'stack' });
+    box.append(h('h3', {}, st.q), area);
+    const step = () => {
+      if (k >= cases.length) {
+        area.replaceChildren(...[st.after ? h('div', { class: 'fb' }, st.after) : null, h('div', { class: 'row' }, next())].filter(Boolean));
+        return;
+      }
+      const c = cases[k]; let locked = false;
+      const fb = h('div', { class: 'fb', hidden: true });
+      const nav = h('div', { class: 'row' });
+      const pick = v => {
+        if (locked) return; locked = true;
+        const ok = v === c.a; R.tot++; if (ok) R.ok++;
+        fb.hidden = false; fb.className = 'fb' + (ok ? '' : ' bad');
+        fb.replaceChildren(h('b', {}, (ok ? 'Так. ' : 'Ні. ') + (c.a === 'L' ? st.L : st.R) + '.'), c.ex);
+        nav.append(h('button', { class: 'btn', type: 'button', onclick: () => { k++; step() } }, k + 1 < cases.length ? 'Наступний випадок' : 'Готово'));
+      };
+      area.replaceChildren(
+        h('div', { class: 'casecard fade' }, h('div', {}, h('span', { class: 'tag' }, `${k + 1} / ${cases.length}`), c.t)),
+        h('div', { class: 'two' },
+          h('button', { class: 'btn ghost', type: 'button', onclick: () => pick('L') }, st.L),
+          h('button', { class: 'btn', type: 'button', onclick: () => pick('R') }, st.R)),
+        fb, nav);
+    };
+    step();
+  },
+
+  basket(st, box) {
+    const q = {}; let drink = 'water', shown = false;
+    const gridA = h('div', { class: 'foods' }), gridP = h('div', { class: 'foods' });
+    const total = h('div', { class: 'big' }, '0 мг');
+    const fill = h('div', { class: 'fill', style: 'width:0%' });
+    const drinks = h('div', { class: 'seg' });
+    const res = h('div', { class: 'stack', hidden: true });
+    const btn = h('button', { class: 'btn', type: 'button', disabled: true }, 'Скільки з цього засвоїться?');
+    const sum = () => FOODS.reduce((a, f) => a + (q[f.id] || 0) * f.mg, 0);
+    const MAX = 7, KCAL = 2000;
+    const count = h('span', { class: 'mono small' });
+    const kcalEl = h('span', { class: 'mono small' });
+    const warn = h('p', { class: 'small', style: 'color:var(--fe)', hidden: true });
+    const kcalSum = () => FOODS.reduce((a, f) => a + (q[f.id] ? f.kcal : 0), 0);
+    const card = f => {
+      const n = FOODS.filter(x => q[x.id]).length;
+      const blocked = !q[f.id] && (n >= MAX || kcalSum() + f.kcal > KCAL);
+      return h('button', { type: 'button', class: 'food' + (q[f.id] ? ' on' : '') + (blocked ? ' off' : ''), 'aria-pressed': q[f.id] ? 'true' : 'false', 'aria-label': `${f.t}, ${f.p}, ${fmt(f.mg)} мг, ${f.kcal} ккал`,
+        onclick: () => { if (shown) return;
+          if (q[f.id]) { q[f.id] = 0; warn.hidden = true }
+          else if (n >= MAX) { warn.hidden = false; warn.textContent = `Можна обрати до ${MAX} продуктів. Приберіть щось, щоб додати інше.` }
+          else if (kcalSum() + f.kcal > KCAL) { warn.hidden = false; warn.textContent = `Це вже більше за ${KCAL} ккал на день. Приберіть щось калорійне.` }
+          else { q[f.id] = 1; warn.hidden = true }
+          draw() } },
+        q[f.id] ? h('span', { class: 'q' }, '✓') : null,
+        h('b', {}, f.t), h('span', { class: 'p' }, f.p + ' · ' + f.kcal + ' ккал'),
+        h('span', { class: 'mg' }, fmt(f.mg) + ' мг заліза'),
+        h('span', { class: 't ' + (f.h ? 'h' : 'n') }, f.h ? 'гемове' : 'негемове'));
+    };
+    const draw = () => {
+      const n = FOODS.filter(f => q[f.id]).length;
+      count.textContent = `Продуктів: ${n} з ${MAX}`;
+      kcalEl.textContent = `Калорій: ${kcalSum()} з ${KCAL}`;
+      gridA.replaceChildren(...FOODS.filter(f => f.h).map(card));
+      gridP.replaceChildren(...FOODS.filter(f => !f.h).map(card));
+      drinks.replaceChildren(...DRINKS.map(d => h('button', { type: 'button', 'aria-pressed': drink === d.id ? 'true' : 'false', onclick: () => { if (shown) return; drink = d.id; draw() } }, d.t)));
+      const s = sum(); total.textContent = fmt(s) + ' мг';
+      fill.style.width = clamp(s / 18 * 100, 0, 100) + '%';
+      btn.disabled = s < 18;
+    };
+    btn.onclick = () => {
+      shown = true;
+      const d = DRINKS.find(x => x.id === drink);
+      const eaten = sum();
+      const abs = FOODS.reduce((a, f) => a + (q[f.id] || 0) * f.mg * f.ab, 0) * d.k;
+      const net = abs - 1.5;
+      const need = (50 - 11) * 8; // орієнтовно 1 нг/мл феритину ≈ 8 мг заліза в депо
+      const months = net > 0 ? need / net / 30 : null;
+      const portions = FOODS.reduce((a, f) => a + (q[f.id] || 0), 0);
+      res.hidden = false;
+      res.replaceChildren(
+        h('div', { class: 'stats' },
+          h('div', { class: 'stat' }, h('span', { class: 'label' }, 'З’їдено'), h('span', { class: 'v' }, fmt(eaten) + ' мг'), h('span', { class: 'muted small' }, portions + ' порцій за день')),
+          h('div', { class: 'stat' }, h('span', { class: 'label' }, 'Засвоїться'), h('span', { class: 'v', style: 'color:var(--fe)' }, '≈ ' + fmt(abs) + ' мг'), h('span', { class: 'muted small' }, d.note || 'гемове ~15–35%, негемове ~2–9%')),
+          h('div', { class: 'stat' }, h('span', { class: 'label' }, 'Втрачається'), h('span', { class: 'v' }, '1–2 мг'), h('span', { class: 'muted small' }, 'щодня, жінка з менструаціями'))),
+        h('div', { class: 'card' },
+          h('h3', {}, months == null ? 'Такий раціон навіть не покриває щоденних втрат.' : `Щоб підняти феритин з 11 до 50, потрібно ≈ ${Math.max(1, Math.round(months))} міс. їсти саме так щодня.`),
+          h('p', {}, 'Депо Олени недорахувалося приблизно 300 мг заліза. Навіть дуже «залізний» день дає трохи більше, ніж організм щодня втрачає. До того ж, що повніше депо, то гірше засвоюється залізо з їжі.'),
+          FOODS.some(f => q[f.id] && (f.id === 'pliver' || f.id === 'cliver')) ? h('p', {}, 'І ще: печінку щодня їсти не варто, у ній дуже багато вітаміну A.') : null,
+          h('p', { class: 'muted small' }, 'Розрахунок орієнтовний: 1 нг/мл феритину відповідає приблизно 8 мг заліза в запасах.')),
+        h('div', { class: 'row' }, next()));
+      btn.remove();
+    };
+    draw();
+    box.append(
+      h('p', { class: 'story' }, '«Не хочу таблеток. Буду їсти печінку і гранати», — каже Олена. Перевіримо.'),
+      h('div', { class: 'fact' }, h('span', { class: 'label' }, 'Гемове і негемове залізо'),
+        h('p', {}, 'Гемове залізо є в м’ясі, печінці, рибі й морепродуктах. Воно засвоюється найкраще, приблизно на 15–35%.'),
+        h('p', {}, 'Негемове залізо є в рослинах і яйцях. Воно засвоюється значно гірше: із зелених листових овочів 7–9%, із круп близько 4%, із бобових лише близько 2%.')),
+      h('h3', {}, 'Зберіть Олені денний раціон, щоб закрити норму 18 мг заліза.'),
+      h('p', { class: 'muted small' }, `Жінці з помірною активністю потрібно близько ${KCAL} ккал на день. Тож можна обрати до ${MAX} продуктів, які разом укладаються в цю калорійність. Натисніть на продукт, щоб додати, ще раз, щоб прибрати.`),
+      h('div', { class: 'row', style: 'justify-content:space-between' }, count, kcalEl),
+      h('div', { class: 'stack', style: 'gap:6px' }, h('div', { class: 'row', style: 'justify-content:space-between' }, h('span', { class: 'label' }, 'Залізо в раціоні / норма 18 мг'), total), h('div', { class: 'track' }, fill)),
+      warn,
+      h('span', { class: 'label' }, 'Тваринні продукти'), gridA,
+      h('span', { class: 'label' }, 'Рослинні продукти і яйця'), gridP,
+      h('div', { class: 'q-block' }, h('span', { class: 'label' }, 'Чим Олена запиває їжу?'), drinks),
+      h('div', { class: 'row' }, btn), res);
+  },
+
+  routine(st, box) {
+    const OPTS = {
+      time: { label: 'Коли приймати?', o: [
+        ['fast', 'Натще, за 30–60 хв до сніданку'], ['bf', 'Разом зі сніданком'], ['after', 'Після їжі']] },
+      drink: { label: 'Чим запивати?', o: [
+        ['water', 'Водою'], ['juice', 'Апельсиновим соком'], ['coffee', 'Кавою'], ['tea', 'Чаєм'], ['milk', 'Молоком']] },
+      extra: { label: 'Що ще Олена п’є вранці?', o: [['none', 'Нічого'], ['min', 'Кальцій і мультимінерали'], ['fiber', 'Клітковину для кишківника']] }
+    };
+    const ch = { time: null, drink: null, extra: null };
+    let tries = 0, counted = false;
+    const form = h('div', { class: 'stack', style: 'gap:16px' });
+    const out = h('div', { class: 'stack', hidden: true });
+    const go = h('button', { class: 'btn', type: 'button', disabled: true }, 'Перемотати 8 тижнів');
+    const nav = h('div', { class: 'row' });
+    const draw = () => {
+      form.replaceChildren(...Object.entries(OPTS).map(([key, g]) => h('div', { class: 'q-block' },
+        h('span', { class: 'label' }, g.label),
+        h('div', { class: 'seg' }, g.o.map(([v, t]) => h('button', { type: 'button', 'aria-pressed': ch[key] === v ? 'true' : 'false', onclick: () => { ch[key] = v; draw() } }, t))))));
+      go.disabled = Object.values(ch).some(v => !v);
+    };
+    const simulate = () => {
+      const why = [];
+      let m;
+      if (ch.time === 'bf' && ch.drink === 'coffee') { m = 0.34; why.push(['−66%', 'Сніданок разом із кавою знижує засвоєння на 66%.', 0]) }
+      else {
+        const t = { fast: 1, bf: .55, after: .6 }[ch.time];
+        if (ch.time === 'fast') why.push(['база', 'Натще засвоєння найкраще, якщо немає проблем зі шлунком.', 1]);
+        if (ch.time === 'bf') why.push(['−45%', 'Їжа зменшує всмоктування таблетки.', 0]);
+        if (ch.time === 'after') why.push(['−40%', 'Після їжі приймають, коли є проблеми зі шлунком. В Олени їх немає, тож вона втрачає частину заліза.', 0]);
+        const d = { water: 1, juice: 1.3, coffee: .46, tea: .15, milk: .5 }[ch.drink];
+        ({ water: () => why.push(['0', 'Вода нічого не додає й не забирає.', 1]),
+           juice: () => why.push(['+30%', 'Апельсиновий сік підвищує всмоктування приблизно на 30%.', 1]),
+           coffee: () => why.push(['−54%', 'Із кавою залізо засвоюється на 54% гірше, ніж із водою.', 0]),
+           tea: () => why.push(['−80%', 'Чорний чай знижує всмоктування на 79–94%.', 0]),
+           milk: () => why.push(['−50%', 'Кальцій молока конкурує із залізом.', 0]) })[ch.drink]();
+        m = t * d;
+      }
+      const e = { none: 1, min: .6, fiber: .4 }[ch.extra];
+      if (ch.extra === 'none') why.push(['0', 'Нічого зайвого поруч.', 1]);
+      if (ch.extra === 'min') why.push(['−40%', 'Інші мінерали не поєднують із залізом.', 0]);
+      if (ch.extra === 'fiber') why.push(['−60%', 'Клітковина й сорбенти зв’язують залізо.', 0]);
+      m *= e;
+      return { m, why };
+    };
+    go.onclick = () => {
+      tries++;
+      const base = R.fer ?? 12;
+      const { m, why } = simulate();
+      const end = Math.round(clamp(base + 38 * m, base, 60));
+      if (!counted) { R.tot += 3; R.ok += why.filter(w => w[2]).length; counted = true }
+      setFer(end);
+      out.hidden = false;
+      out.replaceChildren(chart(base, end),
+        h('div', { class: 'card' },
+          h('h3', {}, `Через 8 тижнів феритин Олени: ${base} → ${end} нг/мл`),
+          h('div', { class: 'why' }, why.map(w => h('div', {}, h('span', { class: 'k ' + (w[2] ? 'plus' : 'minus') }, w[0]), h('span', {}, w[1]))))),
+        h('p', { class: 'muted small' }, 'Модель спрощена і показує напрямок впливу, а не точний прогноз.'));
+      nav.replaceChildren(
+        h('button', { class: 'btn ghost', type: 'button', onclick: () => { setFer(base); out.hidden = true; nav.replaceChildren(); form.scrollIntoView({ behavior: 'smooth', block: 'start' }) } }, 'Спробувати інший режим'),
+        next('Іти далі з цим результатом'));
+      out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    draw();
+    box.append(
+            h('h3', {}, 'Складіть ранковий режим Олени.'), form, h('div', { class: 'row' }, go), out, nav);
+  }
+};
+
+function chart(a, b) {
+  const W = 320, H = 170, L = 34, T = 12, B = 26, Rr = 10;
+  const x = w => L + (W - L - Rr) * w / 8, y = v => T + (H - T - B) * (1 - v / 60);
+  const pts = Array.from({ length: 9 }, (_, w) => [w, a + (b - a) * (1 - Math.exp(-w / 3.5)) / (1 - Math.exp(-8 / 3.5))]);
+  const d = pts.map((p, i) => (i ? 'L' : 'M') + x(p[0]).toFixed(1) + ' ' + y(p[1]).toFixed(1)).join(' ');
+  const area = d + ` L${x(8)} ${y(0)} L${x(0)} ${y(0)} Z`;
+  const ticks = [0, 2, 4, 6, 8].map(w => `<text x="${x(w)}" y="${H - 8}" text-anchor="middle">${w} тиж</text>`).join('');
+  const yt = [0, 30, 50].map(v => `<text x="${L - 6}" y="${y(v) + 3}" text-anchor="end">${v}</text>`).join('');
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('class', 'chart');
+  svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', `Феритин за 8 тижнів: від ${a} до ${b} нг/мл`);
+  svg.innerHTML = `<line class="grid" x1="${L}" x2="${W - Rr}" y1="${y(0)}" y2="${y(0)}"/>
+    <line class="lim" x1="${L}" x2="${W - Rr}" y1="${y(30)}" y2="${y(30)}"/>
+    <line class="goal" x1="${L}" x2="${W - Rr}" y1="${y(50)}" y2="${y(50)}"/>
+    <text class="ll" x="${W - Rr}" y="${y(30) - 4}" text-anchor="end">межа 30</text>
+    <text class="gl" x="${W - Rr}" y="${y(50) - 4}" text-anchor="end">ціль 50</text>
+    <path class="area" d="${area}"/><path class="ln" d="${d}"/>
+    <circle class="pt" cx="${x(8)}" cy="${y(b)}" r="5"/>${ticks}${yt}`;
+  return h('div', { class: 'soft' }, h('span', { class: 'label' }, 'Феритин, нг/мл'), svg);
+}
+
+/* ================= фінал + самоперевірка ================= */
+const Y = t => ({ t, y: true }), N = t => ({ t, y: false });
+const SELF_SYMPTOMS = [...['Втома', 'Сонливість', 'Погіршення пам’яті', 'Погіршення концентрації', 'Дратівливість', 'Емоційна нестабільність', 'Випадіння волосся', 'Ламкість нігтів', 'Сухість чи тьмяність шкіри', 'Запаморочення', 'Задишка', 'Серцебиття', 'Головні болі', 'Біль у м’язах, суглобах, судоми', 'Часті застуди', 'Неспокійні ноги', 'Тяга до льоду чи незвичних запахів', 'Блідість шкіри', 'Мерзнуть руки й ноги', 'Тріщини в кутиках рота', 'Гладкий, болючий язик', 'Синюватий відтінок білків очей', 'Рожева сеча після буряка', 'Тримається температура близько 37 °C', 'Важче переношу фізичні навантаження', 'Тріщини на п’ятах, кірки в носі', 'Тяга до сирого м’яса'].map(Y),
+  N('Свербіж очей навесні'), N('Печія після гострої їжі'), N('Сильна спрага й часте сечовипускання'), N('Біль у вусі'), N('Висипання після нового крему'), N('Нежить від пилку')];
+const SELF_RISKS = [...['Рослинне або обмежувальне харчування', 'Рясні менструації', 'Планую вагітність, вагітна або годую груддю', 'Активний спорт', 'Хвороби ШКТ (гастрит, целіакія тощо)', 'Нещодавня операція, пологи чи хвороба', 'Баріатрична операція в минулому', 'Регулярно здаю кров', 'Довго приймаю омепразол чи подібні ліки від печії', 'Хронічний стрес, виснаження'].map(Y),
+  N('Працюю за комп’ютером'), N('Ношу окуляри'), N('Люблю гостру їжу')];
+const SELF_MENS = [...['Міняю прокладку чи тампон частіше, ніж раз на 3 години', 'За цикл використовую 21 або більше прокладок чи тампонів', 'Доводиться міняти їх уночі', 'Бувають згустки, більші за 2,5 см', 'Менструація триває довше 8 днів'].map(Y),
+  N('Менструація триває 5 днів'), N('Міняю прокладку раз на 4–5 годин'), N('Згустки бувають, але менші за 1 см'), N('Вночі прокладку не міняю')];
+
+
+let GENDER = 'f';
+try { GENDER = localStorage.getItem('zd-gender') || 'f' } catch (e) {}
+function rank(f, pct, g) {
+  const W = g === 'f';
+  const tf = f >= 70 ? 3 : f >= 50 ? 2 : f >= 30 ? 1 : 0;
+  const tp = pct >= 85 ? 3 : pct >= 70 ? 2 : pct >= 50 ? 1 : 0;
+  const t = Math.min(tf, tp);
+  return [W ? 'Рятувальниця депо' : 'Рятувальник депо', W ? 'Залізна міледі' : 'Залізний рицар', W ? 'Залізна леді' : 'Залізний лорд', W ? 'Залізна королева' : 'Залізний король'][t];
+}
+function storyCard(f, pct) {
+  const holder = h('div', { class: 'stack', style: 'align-items:stretch' });
+  const draw = () => {
+    const g = GENDER;
+    const toggle = h('div', { class: 'seg', style: 'justify-content:center' },
+      [['f', 'Я — вона'], ['m', 'Я — він']].map(([v, t]) => h('button', { type: 'button', 'aria-pressed': g === v ? 'true' : 'false',
+        onclick: () => { GENDER = v; try { localStorage.setItem('zd-gender', v) } catch (e) {} draw() } }, t)));
+    const card = h('div', { class: 'storycard fade' },
+      h('div', { class: 'sc-top' },
+        h('div', { class: 'fe-tile' }, h('span', { class: 'n' }, '26'), h('span', { class: 's' }, 'Fe')),
+        h('span', { class: 'brand', style: 'color:var(--ink)' }, CONFIG.handle)),
+      h('div', { class: 'sc-av' }, avatar(f)),
+      h('div', { class: 'stack', style: 'gap:6px' },
+        h('span', { class: 'sc-i' }, 'Я —'),
+        h('div', { class: 'sc-rank' }, rank(f, pct, g)),
+        h('div', { class: 'sc-num' }, f, h('small', {}, ' нг/мл')),
+        h('span', { class: 'sc-meta' }, `${g === 'f' ? 'Підняла' : 'Підняв'} феритин Олени з 11 до ${f} · правильних рішень ${pct}%`)),
+      h('div', { class: 'sc-cta' }, h('b', {}, 'А як твоє депо?'), h('span', {}, 'Пройди гру «Залізне депо» на drlakustaclinic.com')));
+    holder.replaceChildren(card, toggle,
+      h('p', { class: 'muted small', style: 'text-align:center' }, `Зробіть скриншот картки й поділіться в сторіз з позначкою ${CONFIG.handle}.`));
+  };
+  draw();
+  return holder;
+}
+
+const newF = (page, from) => ({ page, from, s: new Set(), r: new Set(), m: new Set(), mens: null, checked: {},
+  order: { s: shuffle(SELF_SYMPTOMS.map((_, i) => i)), r: shuffle(SELF_RISKS.map((_, i) => i)), m: shuffle(SELF_MENS.map((_, i) => i)) } });
+function finale() { F = newF(0, 'game'); finalePage() }
+function selfCheck() { F = newF(1, 'intro'); finalePage() }
+let F = null;
+const reset = () => { S = { done: {}, ferAfter: {}, score: {}, check: null }; save(); intro(); goTop() };
+
+function pillGroup(list, set) {
+  const box = h('div', { class: 'pills checklist' });
+  const draw = () => box.replaceChildren(...list.map((t, i) => h('button', { type: 'button', class: 'pill' + (set.has(i) ? ' on' : ''), 'aria-pressed': set.has(i) ? 'true' : 'false', onclick: () => { set.has(i) ? set.delete(i) : set.add(i); draw() } }, t)));
+  draw(); return box;
+}
+function fGo(p) { if (p === 0 && F.from === 'intro') { intro(); goTop(); return } F.page = p; finalePage(); goTop() }
+function selfHead(n, title, sub) {
+  return h('div', { class: 'stephead' },
+    h('span', { class: 'label' }, `Самоперевірка · ${n} з 3`),
+    h('div', { class: 'dots' }, [1, 2, 3].map(k => h('i', { class: k <= n ? 'on' : '' }))),
+    h('h2', {}, title), sub ? h('p', { class: 'muted' }, sub) : null);
+}
+function checkBlock(list, set, key, onDone, doneLabel) {
+  const checked = !!F.checked[key];
+  const box = h('div', { class: 'pills checklist' });
+  const fb = h('div', { class: 'fb', hidden: true });
+  const nav = h('div', { class: 'row' });
+  const draw = () => {
+    box.replaceChildren(...F.order[key].map(i => {
+      const it = list[i];
+      let c = 'pill';
+      if (checked) { if (set.has(i)) c += it.y ? ' right' : ' wrong' }
+      else if (set.has(i)) c += ' on';
+      return h('button', { type: 'button', class: c, 'aria-pressed': set.has(i) ? 'true' : 'false',
+        onclick: () => { if (checked) return; set.has(i) ? set.delete(i) : set.add(i); draw() } }, it.t);
+    }));
+    nav.replaceChildren(checked
+      ? h('button', { class: 'btn', type: 'button', onclick: onDone }, doneLabel)
+      : h('button', { class: 'btn', type: 'button', onclick: () => { if (!set.size) { onDone(); return } F.checked[key] = true; finalePage() } }, set.size ? 'Перевірити' : 'Нічого з цього, далі'));
+  };
+  draw();
+  if (checked) {
+    const good = [...set].filter(i => list[i].y).length, bad = set.size - good;
+    fb.hidden = false;
+    fb.replaceChildren(h('b', {}, `Пов’язано з дефіцитом заліза: ${good}.` + (bad ? ` Не пов’язано: ${bad}.` : '')),
+      h('span', {}, 'Зелені — ознаки, які можуть бути пов’язані з дефіцитом заліза. Червоні — з ним не пов’язані, їх ми не враховуємо.'));
+  }
+  return [box, fb, nav];
+}
+function checkPage(n, title, sub, list, set, key, fwd) {
+  app.replaceChildren(selfHead(n, title, sub), ...checkBlock(list, set, key, () => fGo(fwd), 'Далі'));
+}
+function navRow(back, fwd, fwdLabel, disabled) {
+  return h('div', { class: 'row' },
+    h('button', { class: 'btn ghost', type: 'button', onclick: () => fGo(back) }, 'Назад'),
+    h('button', { class: 'btn', type: 'button', disabled: disabled || null, onclick: () => fGo(fwd) }, fwdLabel || 'Далі'));
+}
+
+function finalePage() {
+  const f = currentFer() ?? 11;
+  const p = F.page;
+  if (p === 0) {
+    const [ok, tot] = totals();
+    const pct = tot ? Math.round(ok / tot * 100) : 0;
+    const title = f >= 50 ? 'Ціль досягнута' : f >= 30 ? 'Майже у цілі' : 'Депо ще порожнє';
+    const text = f >= 50 ? 'Олена знову має енергію, а її депо повне. Ви орієнтуєтесь у темі краще за більшість пацієнтів.'
+      : f >= 30 ? 'Олена вийшла з дефіциту, але до цілі 50 ще не дотягнула. Перегляньте розділи, де були помилки.'
+      : 'Олена все ще в зоні дефіциту. Спробуйте пройти розділ «Ранкова таблетка» ще раз.';
+    app.replaceChildren(statusBar(f, false),
+      h('div', { class: 'stack fade' }, h('span', { class: 'label' }, 'Тиждень 26 · Результат Олени'), h('div', { class: 'result' }, title), h('p', { class: 'lede' }, text)),
+      storyCard(f, pct),
+      h('div', { class: 'card' }, h('h3', {}, 'А як ваше депо?'), h('p', {}, 'Три короткі питання про вас. Відповіді нікуди не надсилаються і лишаються тільки на цій сторінці.'),
+        h('div', { class: 'row' }, h('button', { class: 'btn lime', type: 'button', onclick: () => fGo(1) }, 'Пройти самоперевірку'))),
+      h('div', { class: 'row' }, h('button', { class: 'btn ghost', type: 'button', onclick: () => { timeline(); goTop() } }, 'План'), h('button', { class: 'btn ghost', type: 'button', onclick: reset }, 'Пройти заново')));
+    return;
+  }
+  if (p === 1) {
+    checkPage(1, 'Що з цього буває у вас?', 'Позначте все, що помічаєте останнім часом, і натисніть «Перевірити».', SELF_SYMPTOMS, F.s, 's', 2);
+    return;
+  }
+  if (p === 2) {
+    checkPage(2, 'Що про вас?', 'Позначте, що підходить, і натисніть «Перевірити».', SELF_RISKS, F.r, 'r', 3);
+    return;
+  }
+  if (p === 3) {
+    const locked = !!F.checked.m;
+    const choice = h('div', { class: 'seg' }, [['yes', 'Так'], ['no', 'Ні'], ['man', 'Я чоловік']].map(([v, t]) =>
+      h('button', { type: 'button', 'aria-pressed': F.mens === v ? 'true' : 'false', disabled: locked || null,
+        onclick: () => { F.mens = v; if (v !== 'yes') F.m.clear(); finalePage() } }, t)));
+    const parts = [selfHead(3, 'Чи є у вас менструації?', 'Рясні менструації — одна з найчастіших причин дефіциту заліза.'), choice];
+    if (F.mens === 'yes') parts.push(
+      h('p', { class: 'muted small' }, 'Норма: 4,5–8 днів і 5–80 мл крові за цикл. Позначте, що буває у вас, і натисніть «Перевірити».'),
+      ...checkBlock(SELF_MENS, F.m, 'm', () => fGo(4), 'Мій результат'));
+    else if (F.mens) parts.push(h('div', { class: 'row' }, h('button', { class: 'btn', type: 'button', onclick: () => fGo(4) }, 'Мій результат')));
+    app.replaceChildren(...parts);
+    return;
+  }
+  const symList = [...F.s].filter(i => SELF_SYMPTOMS[i].y).map(i => SELF_SYMPTOMS[i].t);
+  const riskList = [...F.r].filter(i => SELF_RISKS[i].y).map(i => SELF_RISKS[i].t);
+  const mensList = [...F.m].filter(i => SELF_MENS[i].y).map(i => SELF_MENS[i].t);
+  const s = symList.length, r = riskList.length + (mensList.length ? 1 : 0), m = mensList.length;
+  if (p === 4) {
+    let head, body;
+    if (s >= 3 || (s >= 1 && r >= 1) || m >= 2) { head = 'Варто перевіритись'; body = 'Ви позначили кілька сигналів, які можуть свідчити про нестачу заліза.' }
+    else if (s + r > 0) { head = 'Є окремі сигнали'; body = 'Поодинокі симптоми бувають і з інших причин. Якщо вони тримаються тижнями або ви в групі ризику, перевірте феритин хоча б раз на рік.' }
+    else { head = 'Явних сигналів немає'; body = 'Чудово. Якщо з’являться втома, випадіння волосся чи інші ознаки, повертайтеся до самоперевірки.' }
+    const group = (title, list) => list.length ? h('div', { class: 'stack', style: 'gap:8px' },
+      h('span', { class: 'label' }, title),
+      h('div', { class: 'pills' }, list.map(t => h('span', { class: 'pill right' }, t)))) : null;
+    app.replaceChildren(...[
+      h('div', { class: 'stack fade' }, h('span', { class: 'label' }, 'Ваш результат'), h('div', { class: 'result' }, head), h('p', { class: 'lede' }, body)),
+      (s + r) ? h('div', { class: 'card' },
+        h('h3', {}, 'Сигнали, які свідчать про дефіцит'),
+        group('Симптоми', symList), group('Фактори ризику', riskList), group('Ознаки рясних менструацій', mensList),
+        h('p', { class: 'muted small' }, `Симптомів: ${s} · факторів ризику: ${r}. Це не діагноз, а підказка, що варто звернутися до лікаря.`)) : null,
+      (s + r) ? h('div', { class: 'fact' }, h('span', { class: 'label' }, 'Що робити'), h('p', {}, 'Найпростіший перший крок: загальний аналіз крові, феритин і розбір результатів із лікарем.')) : null,
+      (s + r)
+        ? h('div', { class: 'row' }, h('button', { class: 'btn lime', type: 'button', onclick: () => fGo(5) }, 'Як перевіритись у клініці'))
+        : h('div', { class: 'row' },
+            h('button', { class: 'btn lime', type: 'button', onclick: () => fGo(5) }, 'Все ж таки хочу перевіритись'),
+            h('button', { class: 'btn ghost', type: 'button', onclick: reset }, 'Пройти гру знову')),
+      h('p', { class: 'disclaimer' }, 'Гра має освітню мету і не замінює консультацію лікаря.')].filter(Boolean));
+    return;
+  }
+  // p === 5: пропозиція клініки
+  const promo = CONFIG.promo.on;
+  app.replaceChildren(
+    h('div', { class: 'stack fade' }, h('span', { class: 'label' }, 'Наступний крок'), h('h2', {}, 'Перевірте своє депо разом із лікарем')),
+    h('section', { class: 'cta' },
+      h('span', { class: 'label' }, 'Dr. Lakusta Clinic'),
+      h('h2', {}, 'Перевірся на залізодефіцит'),
+      promo ? h('span', { class: 'promo' }, CONFIG.promo.badge) : null,
+      h('p', {}, 'Лабораторні обстеження в Діла або Сінево разом із консультацією лікаря. Лікар розбере аналізи, визначить причину дефіциту, дасть рекомендації з харчування і план корекції й контролю.'),
+      h('div', { class: 'pkgs' }, CONFIG.packages.map(pk => h('div', { class: 'pkg' },
+        h('h3', {}, pk.name),
+        h('ul', {}, pk.tests.map(t => h('li', {}, t)), h('li', {}, 'Консультація лікаря')),
+        h('div', { class: 'price' }, promo ? [h('span', { class: 'now' }, pk.promo + ' грн'), h('s', {}, pk.full + ' грн')] : h('span', { class: 'now' }, pk.full + ' грн'))))),
+      h('ol', { class: 'steps' },
+        h('li', {}, 'Напишіть адміністратору, що хочете пакет «Перевірся на залізодефіцит».'),
+        h('li', {}, 'Отримайте інформацію для здачі аналізів у Діла або Сінево.'),
+        h('li', {}, 'Оберіть час консультації, онлайн або в клініці.'),
+        h('li', {}, 'Здайте аналізи й отримайте висновок та план рекомендацій.')),
+      h('p', { class: 'small' }, 'Лікарі: ' + CONFIG.doctors + '.'),
+      promo ? h('p', { class: 'small', style: 'opacity:.8' }, CONFIG.promo.note) : null,
+      h('div', { class: 'row' },
+        h('a', { class: 'btn', href: CONFIG.bookUrl, target: '_blank', rel: 'noopener' }, 'Записатись у Telegram'),
+        h('a', { class: 'btn', href: CONFIG.pageUrl, target: '_blank', rel: 'noopener', style: 'background:transparent;color:var(--on-forest);border:1.5px solid var(--on-forest)' }, 'Детальніше'))),
+    h('div', { class: 'row' },
+      F.from === 'intro'
+        ? h('button', { class: 'btn ghost', type: 'button', onclick: () => { timeline(); goTop() } }, 'Підняти феритин Олені')
+        : h('button', { class: 'btn ghost', type: 'button', onclick: reset }, 'Пройти гру заново')),
+    h('p', { class: 'disclaimer' }, 'Гра має освітню мету і не замінює консультацію лікаря. Не починайте прийом заліза й не призначайте собі крапельниці без лікаря.'));
+}
+
+intro();
+</script>
+
+</body>
+</html>
