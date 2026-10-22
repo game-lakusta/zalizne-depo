@@ -673,10 +673,12 @@ const TYPES = {
     })) };
     btn.onclick = () => {
       checked = true; draw();
-      let right = 0;
-      items.forEach(it => { if (sel.has(it.k) === it.y) right++ });
-      R.ok += right; R.tot += items.length;
-      if (st.fer && R.fer != null) setFer(st.fer(R.fer, right / items.length));
+      const need = items.filter(it => it.y).length;
+      const found = items.filter(it => it.y && sel.has(it.k)).length;
+      const extra = items.filter(it => !it.y && sel.has(it.k)).length;
+      const score = Math.max(0, found - extra);
+      R.ok += score; R.tot += need;
+      if (st.fer && R.fer != null) setFer(st.fer(R.fer, score / need));
       const note = it => h('p', { class: 'n' + (it.y ? '' : ' x') }, h('b', {}, it.t + '. '), it.why);
       if (false) {
         const ws = items.filter(it => it.why && (sel.has(it.k) || it.y));
@@ -690,8 +692,8 @@ const TYPES = {
         ...(mine.length ? [h('span', { class: 'label' }, 'Ваші відповіді'), ...mine.map(note)] : []),
         ...(rest.length ? [h('span', { class: 'label', style: 'margin-top:10px' }, 'Що ви не обрали'), ...rest.map(note)] : []));
       }
-      fb.hidden = false; fb.className = 'fb' + (right === items.length ? '' : '');
-      fb.replaceChildren(h('b', {}, `Правильно ${right} з ${items.length}.`), st.after || '');
+      fb.hidden = false; fb.className = 'fb';
+      fb.replaceChildren(h('b', {}, `Ви знайшли ${found} з ${need} правильних.` + (extra ? ` Зайвих: ${extra}.` : '')), st.after || '');
       btn.replaceWith(next());
     };
     draw();
