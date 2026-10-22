@@ -264,7 +264,9 @@ const CONFIG = {
   doctors: 'Катерина Лазарева (онлайн / очно), Анна Євтух (онлайн), Олександра Юхимчук (онлайн / очно)',
   pageUrl: 'https://www.drlakustaclinic.com/zd2',
   bookUrl: 'https://t.me/lakusta_assistant',
-  handle: '@dr.lakusta_clinic'
+  handle: '@dr.lakusta_clinic',
+  // Статистика: вставте ідентифікатор Google Analytics 4 (вигляду G-XXXXXXXXXX). Порожньо — статистика вимкнена.
+  gaId: ''
 };
 
 /* ================= helpers ================= */
@@ -531,6 +533,28 @@ function statusBar(f, withHome = true) {
 }
 
 /* ================= екрани ================= */
+/* ================= статистика ================= */
+const sent = new Set();
+function track(name, params = {}, once = false) {
+  try {
+    if (!CONFIG.gaId || !window.gtag) return;
+    if (once) { const k = name + JSON.stringify(params); if (sent.has(k)) return; sent.add(k) }
+    window.gtag('event', name, params);
+  } catch (e) {}
+}
+(function initStats() {
+  if (!CONFIG.gaId) return;
+  try {
+    const sc = document.createElement('script');
+    sc.async = true; sc.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(CONFIG.gaId);
+    document.head.append(sc);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments) };
+    window.gtag('js', new Date());
+    window.gtag('config', CONFIG.gaId, { anonymize_ip: true });
+  } catch (e) {}
+})();
+
 function intro() {
   const started = Object.keys(S.done).length > 0;
   app.replaceChildren(
@@ -582,6 +606,8 @@ function timeline() {
 }
 
 function runChapter(i) {
+  if (i === 0) track('game_start', {}, true);
+  track('chapter_start', { chapter: CHAPTERS[i].id });
   R = { i, step: 0, fer: ferBefore(i), ok: 0, tot: 0 };
   renderStep();
 }
@@ -609,6 +635,7 @@ function chapterEnd() {
   S.done[ch.id] = true; S.score[ch.id] = [R.ok, R.tot];
   if (R.fer != null) S.ferAfter[ch.id] = R.fer;
   save();
+  track('chapter_complete', { chapter: ch.id, correct: R.ok, total: R.tot });
   const last = R.i === CHAPTERS.length - 1;
   app.replaceChildren(statusBar(R.fer),
     h('div', { class: 'stack fade' },
@@ -984,6 +1011,7 @@ function storyCard(f, pct) {
     const status = h('p', { class: 'small', style: 'text-align:center', hidden: true });
     const shareBtn = h('button', { class: 'btn lime', type: 'button', style: 'align-self:center' }, 'Поділитися в сторіз');
     shareBtn.onclick = async () => {
+      track('story_share_click', { rank: rank(f, pct, g) });
       shareBtn.disabled = true; status.hidden = false; status.textContent = 'Готуємо картинку…';
       try {
         const blob = await storyImage(f, pct, g);
@@ -1012,8 +1040,13 @@ function storyCard(f, pct) {
 
 const newF = (page, from) => ({ page, from, s: new Set(), s2: new Set(), r: new Set(), m: new Set(), mens: null, checked: {},
   order: { s: shuffle(SELF_SYM_A.map((_, i) => i)), s2: shuffle(SELF_SYM_B.map((_, i) => i)), r: shuffle(SELF_RISKS.map((_, i) => i)), m: shuffle(SELF_MENS.map((_, i) => i)) } });
-function finale() { F = newF(0, 'game'); finalePage() }
-function selfCheck() { F = newF(1, 'intro'); finalePage() }
+function finale() {
+  F = newF(0, 'game');
+  const f = currentFer() ?? 11, [ok, tot] = totals(), pct = tot ? Math.round(ok / tot * 100) : 0;
+  track('game_complete', { ferritin: f, correct_pct: pct, rank: rank(f, pct, GENDER) }, true);
+  finalePage();
+}
+function selfCheck() { F = newF(1, 'intro'); track('selfcheck_start', { from: 'intro' }); finalePage() }
 let F = null;
 const reset = () => { S = { done: {}, ferAfter: {}, score: {}, check: null }; save(); intro(); goTop() };
 
@@ -1083,6 +1116,7 @@ function finalePage() {
       h('div', { class: 'row' }, h('button', { class: 'btn ghost', type: 'button', onclick: () => { timeline(); goTop() } }, 'План'), h('button', { class: 'btn ghost', type: 'button', onclick: reset }, 'Пройти заново')));
     return;
   }
+  if (p === 1 && F.from === 'game') track('selfcheck_start', { from: 'game' }, true);
   if (p === 1) {
     checkPage(1, 'Що з цього буває у вас?', 'Самопочуття, енергія, настрій. Позначте все, що помічаєте останнім часом, і натисніть «Перевірити».', SELF_SYM_A, F.s, 's', 6);
     return;
@@ -1117,6 +1151,7 @@ function finalePage() {
     if (s >= 3 || (s >= 1 && r >= 1) || m >= 2) { head = 'Варто перевіритись'; body = 'Ви позначили кілька сигналів, які можуть свідчити про нестачу заліза.' }
     else if (s + r > 0) { head = 'Є окремі сигнали'; body = 'Поодинокі симптоми бувають і з інших причин. Якщо вони тримаються тижнями або ви в групі ризику, перевірте феритин хоча б раз на рік.' }
     else { head = 'Явних сигналів немає'; body = 'Чудово. Якщо з’являться втома, випадіння волосся чи інші ознаки, повертайтеся до самоперевірки.' }
+    track('selfcheck_result', { result: head, symptoms: s, risks: r, from: F.from }, true);
     const group = (title, list) => list.length ? h('div', { class: 'stack', style: 'gap:8px' },
       h('span', { class: 'label' }, title),
       h('div', { class: 'pills' }, list.map(t => h('span', { class: 'pill right' }, t)))) : null;
@@ -1136,6 +1171,7 @@ function finalePage() {
     return;
   }
   // p === 5: пропозиція клініки
+  track('clinic_offer_view', { from: F.from }, true);
   const promo = CONFIG.promo.on;
   app.replaceChildren(
     h('div', { class: 'stack fade' }, h('span', { class: 'label' }, 'Наступний крок'), h('h2', {}, 'Перевірте своє депо заліза разом із лікарем')),
@@ -1156,8 +1192,8 @@ function finalePage() {
       h('p', { class: 'small' }, 'Лікарі: ' + CONFIG.doctors + '.'),
       promo ? h('p', { class: 'small', style: 'opacity:.8' }, CONFIG.promo.note) : null,
       h('div', { class: 'row' },
-        h('a', { class: 'btn', href: CONFIG.bookUrl, target: '_blank', rel: 'noopener' }, 'Записатись у Telegram'),
-        h('a', { class: 'btn', href: CONFIG.pageUrl, target: '_blank', rel: 'noopener', style: 'background:transparent;color:var(--on-forest);border:1.5px solid var(--on-forest)' }, 'Детальніше'))),
+        h('a', { class: 'btn', href: CONFIG.bookUrl, target: '_blank', rel: 'noopener', onclick: () => track('click_telegram') }, 'Записатись у Telegram'),
+        h('a', { class: 'btn', href: CONFIG.pageUrl, target: '_blank', rel: 'noopener', onclick: () => track('click_details'), style: 'background:transparent;color:var(--on-forest);border:1.5px solid var(--on-forest)' }, 'Детальніше'))),
     h('div', { class: 'row' },
       F.from === 'intro'
         ? h('button', { class: 'btn ghost', type: 'button', onclick: () => { timeline(); goTop() } }, 'Підняти феритин Олені')
